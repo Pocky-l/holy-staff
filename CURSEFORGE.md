@@ -1,0 +1,40 @@
+# Holy Staff
+
+A blessed staff for players who like to keep their friends alive. Three healing skills on one button,
+light effects, sounds and green numbers that show exactly how much you healed.
+
+## Skills
+All skills are cast with **right click**. Switch the skill with **left click** or **sneak + mouse wheel**.
+
+- **Blessed Ground** - aim with the translucent preview circle and place a rune circle. Light fills it
+  for 0.6 s, then everyone inside is healed at once. Cooldown 3 s.
+- **Holy Beam** - a beam of light locks onto an ally and heals it strongly for 3 s. You walk slowly and
+  cannot jump while channelling; click again to cancel. Perfect for keeping a tank alive. Cooldown 10 s.
+- **Sanctuary** - plant the staff in the ground: enemies around are thrown back, a dome of light rises
+  and heals all allies inside in pulses. You cannot move for 3 s. Cooldown 20 s.
+
+## Features
+- Animated 3D staff, taller than the player, with a glowing crystal and casting poses
+- Green heal numbers flying out of healed entities; your own heals appear next to your health bar
+- Skill bar with cooldowns and a cast bar
+- Heals players, pets, animals, villagers and golems (hostile mobs are not healed, configurable)
+- Every number is configurable
+
+## Crafting
+Golden apple, two gold ingots and two blaze rods (see the recipe book).
+
+## Requirements
+[NeoForge](https://neoforged.net) 1.21.1 and [GeckoLib](https://www.curseforge.com/minecraft/mc-mods/geckolib), on both client and server.
+
+## Credits
+Made by **Pocky**. Sounds built from CC0 sources: [Cure Magic](https://opengameart.org/content/cure-magic) by Someoneman
+and the [Kenney](https://kenney.nl) sound packs. Source code: [GitHub](https://github.com/Pocky-l/holy-staff)
+
+<!-- more-mods:start -->
+## More mods by Pocky
+
+[![Rancher's Vacpack](https://raw.githubusercontent.com/Pocky-l/ranchers-vacpack/main/docs/icon.png)](https://www.curseforge.com/minecraft/mc-mods/ranchers-vacpack)
+
+**[Rancher's Vacpack](https://www.curseforge.com/minecraft/mc-mods/ranchers-vacpack)** - A Slime Rancher inspired vacuum gun: suck up items and small mobs, store them in a tank and shoot them back out. ([source](https://github.com/Pocky-l/ranchers-vacpack))
+
+<!-- more-mods:end -->
