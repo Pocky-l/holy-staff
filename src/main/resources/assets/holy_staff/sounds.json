@@ -1,0 +1,59 @@
+{
+  "skill_switch": {
+    "subtitle": "subtitles.holy_staff.skill_switch",
+    "sounds": [
+      "holy_staff:skill_switch"
+    ]
+  },
+  "blessed_cast": {
+    "subtitle": "subtitles.holy_staff.blessed_cast",
+    "sounds": [
+      "holy_staff:blessed_cast"
+    ]
+  },
+  "blessed_burst": {
+    "subtitle": "subtitles.holy_staff.blessed_burst",
+    "sounds": [
+      "holy_staff:blessed_burst"
+    ]
+  },
+  "beam_start": {
+    "subtitle": "subtitles.holy_staff.beam",
+    "sounds": [
+      "holy_staff:beam_start"
+    ]
+  },
+  "beam_loop": {
+    "subtitle": "subtitles.holy_staff.beam",
+    "sounds": [
+      "holy_staff:beam_loop"
+    ]
+  },
+  "beam_end": {
+    "subtitle": "subtitles.holy_staff.beam_end",
+    "sounds": [
+      "holy_staff:beam_end"
+    ]
+  },
+  "sanctuary_plant": {
+    "subtitle": "subtitles.holy_staff.sanctuary",
+    "sounds": [
+      "holy_staff:sanctuary_plant"
+    ]
+  },
+  "sanctuary_pulse": {
+    "subtitle": "subtitles.holy_staff.sanctuary_pulse",
+    "sounds": [
+      "holy_staff:sanctuary_pulse1",
+      "holy_staff:sanctuary_pulse2",
+      "holy_staff:sanctuary_pulse3"
+    ]
+  },
+  "heal": {
+    "subtitle": "subtitles.holy_staff.heal",
+    "sounds": [
+      "holy_staff:heal1",
+      "holy_staff:heal2"
+    ]
+  }
+}

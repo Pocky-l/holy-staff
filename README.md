@@ -11,31 +11,75 @@
 <p align="center">
   <img alt="Minecraft 1.21.1" src="https://img.shields.io/badge/Minecraft-1.21.1-62B47A">
   <img alt="NeoForge" src="https://img.shields.io/badge/Loader-NeoForge-F16436">
+  <img alt="Requires GeckoLib" src="https://img.shields.io/badge/Requires-GeckoLib-8A5CF6">
   <img alt="License MIT" src="https://img.shields.io/badge/License-MIT-blue">
 </p>
 
 ## Features
 
-- TBD
+- **Holy Staff**: an animated 3D staff with a floating, glowing crystal inside a golden halo, taller than the
+  player. Held forward like a mage ready to cast, pointed at the target while beaming and planted in the ground during Sanctuary.
+- **Three skills, one button**: right click casts the selected skill. Switch skills with **left click** or
+  **sneak + mouse wheel**; the skill bar next to the hotbar shows which one is selected.
+  - **Blessed Ground**: while it is selected, a translucent circle shows where it will land, so you can aim it.
+    Casting marks a rune circle under the aimed ally or block. Light fills it from the centre for
+    0.6 s, then the circle flashes, light rays shoot up and every ally inside is healed at once.
+  - **Holy Beam**: a beam of light locks onto the aimed ally and heals it strongly for up to 3 s, ideal for keeping
+    a tank alive. While channelling you walk slowly and cannot jump; click again to cancel.
+  - **Sanctuary**: you plant the staff and cannot move for 3 s. Enemies around are thrown back by a shockwave, a
+    dome of light rises around you and every pulse heals all allies inside. Longest cooldown.
+- **Floating heal numbers**: every heal makes a green number (`+6`) fly out of the healed entity, showing how much
+  health was restored, with golden sparkles. Heals you receive pop up right next to your health bar.
+- **Skill bar**: icons of the three skills with cooldown sweeps and seconds left, the selected one framed in gold;
+  a cast bar while channelling and the skill name when you switch.
+- **Sounds**: chimes, a humming beam and a deep bell when the staff strikes the ground.
+- Heals players, pets, animals, villagers and golems; hostile mobs are not healed (configurable).
+- Right click still opens chests and doors; right clicking a mob heals it instead of trading or making a pet sit.
+  The staff never attacks or breaks blocks.
 
 ## Controls
 
-| Action | Default |
+| Input | Action |
 |---|---|
-| TBD | TBD |
+| Right click | Cast the selected skill |
+| Left click / sneak + mouse wheel | Switch skill (an extra key can be bound in Controls) |
+| Left or right click during Holy Beam | Cancel the beam |
+
+| Skill | Default effect | Cooldown |
+|---|---|---|
+| Blessed Ground | heal 7 to everyone in radius 3 after 0.6 s | 3 s |
+| Holy Beam | 8 health per second for 3 s on one ally | 10 s |
+| Sanctuary | knockback, 6 pulses of 2.5 health in radius 7 | 20 s |
 
 ## Crafting
 
-TBD. In creative mode all items are in the **Pocky Mods** tab.
+```
+ . G A
+ . B G
+ B . .
+```
+
+`A` Golden Apple, `G` Gold Ingot, `B` Blaze Rod. The recipe unlocks when you get a golden apple.
+In creative mode the staff is in the **Pocky Mods** tab and in **Combat**.
 
 ## Configuration
 
-TBD
+`config/holy_staff-common.toml` (also in the in-game config screen):
+
+| Option | Default | Description |
+|---|---|---|
+| `healMonsters` | `false` | Whether hostile mobs can be healed |
+| `blessedGround.amount` / `radius` / `delay` / `range` / `cooldown` | `7` / `3` / `0.6` s / `20` / `3` s | Blessed Ground |
+| `holyBeam.healPerSecond` / `duration` / `range` / `movementMultiplier` / `cooldown` | `8` / `3` s / `16` / `0.3` / `10` s | Holy Beam |
+| `sanctuary.healPerPulse` / `pulseInterval` / `duration` / `radius` / `knockbackRadius` / `knockbackStrength` / `cooldown` | `2.5` / `0.5` s / `3` s / `7` / `5` / `1.5` / `20` s | Sanctuary |
+
+`config/holy_staff-client.toml`: `showHealNumbers`, `showSkillHud`.
 
 ## Installation
 
 1. Install [NeoForge](https://neoforged.net) for Minecraft 1.21.1.
-2. Put this mod into the `mods` folder.
+2. Install [GeckoLib](https://www.curseforge.com/minecraft/mc-mods/geckolib) 4.9 or newer.
+3. Put this mod into the `mods` folder (on the client and on the server).
 
 ## Building
 
@@ -48,6 +92,11 @@ The jar is written to `build/libs/`.
 ## Credits
 
 - Author: **Pocky**.
+- Model, textures and particles: made for this mod.
+- Sounds: made for this mod from CC0 sources: [Cure Magic](https://opengameart.org/content/cure-magic) by Someoneman
+  (OpenGameArt) and the [Kenney](https://kenney.nl) Sci-Fi, Impact and Interface sound packs, layered with
+  synthesized chords.
+- Animated model rendering: [GeckoLib](https://github.com/bernie-g/geckolib).
 
 ## License
 

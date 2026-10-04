@@ -10,6 +10,7 @@ displayName="${mod_name}"
 authors="${mod_authors}"
 displayURL="${mod_url}"
 logoFile="logo.png"
+enumExtensions="META-INF/enumextensions.json"
 description='''${mod_description}'''
 
 [[dependencies.${mod_id}]]
@@ -23,5 +24,12 @@ description='''${mod_description}'''
     modId="minecraft"
     type="required"
     versionRange="${minecraft_version_range}"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="geckolib"
+    type="required"
+    versionRange="[${geckolib_version},)"
     ordering="NONE"
     side="BOTH"

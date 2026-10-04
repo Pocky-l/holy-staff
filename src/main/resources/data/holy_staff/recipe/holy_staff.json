@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " GA",
+    " BG",
+    "B  "
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:golden_apple"
+    },
+    "B": {
+      "item": "minecraft:blaze_rod"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    }
+  },
+  "result": {
+    "id": "holy_staff:holy_staff",
+    "count": 1
+  }
+}
