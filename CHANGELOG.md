@@ -4,8 +4,7 @@ All notable changes to this mod are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - Unreleased
-
+## [1.0.0] - 2026-10-04
 ### Added
 - Holy Staff: an animated staff taller than the player with a glowing crystal, crafted from a golden apple, gold ingots and blaze rods.
 - Three skills on right click, switched with left click or sneak + mouse wheel:
