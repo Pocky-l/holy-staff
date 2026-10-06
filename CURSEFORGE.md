@@ -3,6 +3,10 @@
 A blessed staff for players who like to keep their friends alive. Three healing skills on one button,
 light effects, sounds and green numbers that show exactly how much you healed.
 
+![Blessed Ground: light fills the rune circle and heals everyone inside](https://raw.githubusercontent.com/Pocky-l/holy-staff/main/docs/screenshots/blessed-ground.jpg)
+
+*Blessed Ground: light fills the rune circle and heals everyone inside*
+
 ## Skills
 All skills are cast with **right click**. Switch the skill with **left click** or **sneak + mouse wheel**.
 
@@ -25,6 +29,12 @@ Golden apple, two gold ingots and two blaze rods (see the recipe book).
 
 ## Requirements
 [NeoForge](https://neoforged.net) 1.21.1 and [GeckoLib](https://www.curseforge.com/minecraft/mc-mods/geckolib), on both client and server.
+
+## Screenshots
+
+![Holy Beam: a channelled beam of light keeps an ally alive](https://raw.githubusercontent.com/Pocky-l/holy-staff/main/docs/screenshots/holy-beam.jpg)
+
+*Holy Beam: a channelled beam of light keeps an ally alive*
 
 ## Credits
 Made by **Pocky**. Sounds built from CC0 sources: [Cure Magic](https://opengameart.org/content/cure-magic) by Someoneman
