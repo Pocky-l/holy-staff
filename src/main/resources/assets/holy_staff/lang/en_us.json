@@ -1,6 +1,8 @@
 {
   "itemGroup.pockymods.pocky_mods": "Pocky Mods",
   "item.holy_staff.holy_staff": "Holy Staff",
+  "item.holy_staff.creative_holy_staff": "Creative Holy Staff",
+  "tooltip.holy_staff.creative": "Creative: no cooldowns, double healing, double beam range",
   "entity.holy_staff.blessed_ground": "Blessed Ground",
   "tooltip.holy_staff.description": "A blessed staff that mends allies.",
   "tooltip.holy_staff.controls": "Right click: cast. Left click / sneak + wheel: switch skill",

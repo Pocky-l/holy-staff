@@ -22,6 +22,7 @@ import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import com.pockyl.holy_staff.Config;
 import com.pockyl.holy_staff.client.HolyStaffRenderer;
 import com.pockyl.holy_staff.registry.ModAttachments;
 import com.pockyl.holy_staff.registry.ModDataComponents;
@@ -42,12 +43,33 @@ public final class HolyStaffItem extends Item implements GeoItem {
     public static final String CAST_ANIMATION = "cast";
 
     private static final RawAnimation IDLE = RawAnimation.begin().thenLoop("idle");
+    private static final float CREATIVE_HEAL_MULTIPLIER = 2.0F;
+    private static final double CREATIVE_BEAM_RANGE_MULTIPLIER = 2.0;
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+    private final boolean creative;
 
-    public HolyStaffItem(Properties properties) {
+    public HolyStaffItem(Properties properties, boolean creative) {
         super(properties.component(ModDataComponents.SELECTED_SKILL.get(), Skill.BLESSED_GROUND));
+        this.creative = creative;
         GeoItem.registerSyncedAnimatable(this);
+    }
+
+    /** The Creative Holy Staff: no cooldowns, stronger heals and a longer beam. */
+    public boolean isCreative() {
+        return creative;
+    }
+
+    public int cooldown(Skill skill) {
+        return creative ? 0 : skill.cooldown();
+    }
+
+    public float healMultiplier() {
+        return creative ? CREATIVE_HEAL_MULTIPLIER : 1.0F;
+    }
+
+    public double beamRange() {
+        return Config.beamRange() * (creative ? CREATIVE_BEAM_RANGE_MULTIPLIER : 1.0);
     }
 
     public static Skill selected(ItemStack stack) {
@@ -102,6 +124,9 @@ public final class HolyStaffItem extends Item implements GeoItem {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable("tooltip.holy_staff.description").withStyle(ChatFormatting.GRAY));
+        if (creative) {
+            tooltip.add(Component.translatable("tooltip.holy_staff.creative").withStyle(ChatFormatting.LIGHT_PURPLE));
+        }
         Skill selected = selected(stack);
         for (Skill skill : Skill.values()) {
             boolean active = skill == selected;
@@ -141,7 +166,7 @@ public final class HolyStaffItem extends Item implements GeoItem {
             @Override
             public BlockEntityWithoutLevelRenderer getGeoItemRenderer() {
                 if (renderer == null) {
-                    renderer = new HolyStaffRenderer();
+                    renderer = new HolyStaffRenderer(creative);
                 }
                 return renderer;
             }

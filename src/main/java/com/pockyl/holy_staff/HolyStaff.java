@@ -32,7 +32,10 @@ public final class HolyStaff {
         ModSounds.register(modBus);
         modBus.addListener(ModNetwork::register);
         modBus.addListener(ModItems::addToVanillaTabs);
-        PockyModsTab.register(modBus, () -> new ItemStack(ModItems.HOLY_STAFF.get()), output -> output.accept(ModItems.HOLY_STAFF));
+        PockyModsTab.register(modBus, () -> new ItemStack(ModItems.HOLY_STAFF.get()), output -> {
+            output.accept(ModItems.HOLY_STAFF);
+            output.accept(ModItems.CREATIVE_HOLY_STAFF);
+        });
 
         container.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
         container.registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_SPEC);

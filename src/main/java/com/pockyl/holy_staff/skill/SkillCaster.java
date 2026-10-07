@@ -52,15 +52,15 @@ public final class SkillCaster {
         }
 
         boolean cast = switch (skill) {
-            case BLESSED_GROUND -> blessedGround(player);
-            case HOLY_BEAM -> holyBeam(player);
-            case SANCTUARY -> sanctuary(player);
+            case BLESSED_GROUND -> blessedGround(player, staff);
+            case HOLY_BEAM -> holyBeam(player, staff);
+            case SANCTUARY -> sanctuary(player, staff);
         };
         if (!cast) {
             return false;
         }
 
-        int ticks = skill.cooldown();
+        int ticks = staff.cooldown(skill);
         cooldowns.start(skill, now, ticks);
         // Test and fake players have no client with this mod; GeckoLib would fail sending its animation packet to them.
         if (ModNetwork.sendToPlayer(player, new CooldownPayload(skill.ordinal(), ticks)) && !skill.isChannelled()) {
@@ -70,30 +70,31 @@ public final class SkillCaster {
         return true;
     }
 
-    private static boolean blessedGround(ServerPlayer player) {
+    private static boolean blessedGround(ServerPlayer player, HolyStaffItem staff) {
         ServerLevel level = player.serverLevel();
         Vec3 pos = groundTarget(player);
-        level.addFreshEntity(new BlessedGround(level, pos, Config.blessedRadius(), Config.blessedDelay(), Config.blessedHeal()));
+        level.addFreshEntity(new BlessedGround(level, pos, Config.blessedRadius(), Config.blessedDelay(),
+                Config.blessedHeal() * staff.healMultiplier()));
         ModNetwork.sendToNearby(player, new SkillFxPayload(Skill.BLESSED_GROUND.ordinal(), player.getId(),
                 new Vector3f((float) pos.x, (float) pos.y, (float) pos.z)));
         level.playSound(null, pos.x, pos.y, pos.z, ModSounds.BLESSED_CAST.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
         return true;
     }
 
-    private static boolean holyBeam(ServerPlayer player) {
-        LivingEntity target = findAimedAlly(player, Config.beamRange());
+    private static boolean holyBeam(ServerPlayer player, HolyStaffItem staff) {
+        LivingEntity target = findAimedAlly(player, staff.beamRange());
         if (target == null) {
             player.displayClientMessage(Component.translatable("message.holy_staff.no_target"), true);
             return false;
         }
-        Channels.start(player, Skill.HOLY_BEAM, target, Config.beamDuration());
+        Channels.start(player, staff, Skill.HOLY_BEAM, target, Config.beamDuration());
         player.serverLevel().playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.BEAM_START.get(),
                 SoundSource.PLAYERS, 1.0F, 1.0F);
         return true;
     }
 
-    private static boolean sanctuary(ServerPlayer player) {
-        Channels.start(player, Skill.SANCTUARY, null, Config.sanctuaryDuration());
+    private static boolean sanctuary(ServerPlayer player, HolyStaffItem staff) {
+        Channels.start(player, staff, Skill.SANCTUARY, null, Config.sanctuaryDuration());
         player.serverLevel().playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.SANCTUARY_PLANT.get(),
                 SoundSource.PLAYERS, 1.4F, 1.0F);
         return true;

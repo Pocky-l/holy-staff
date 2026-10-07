@@ -1,6 +1,8 @@
 {
   "itemGroup.pockymods.pocky_mods": "Pocky Mods",
   "item.holy_staff.holy_staff": "Священный посох",
+  "item.holy_staff.creative_holy_staff": "Творческий священный посох",
+  "tooltip.holy_staff.creative": "Творческий: без перезарядки, двойное лечение, двойная дальность луча",
   "entity.holy_staff.blessed_ground": "Благословенная земля",
   "tooltip.holy_staff.description": "Благословлённый посох, исцеляющий союзников.",
   "tooltip.holy_staff.controls": "ПКМ: применить. ЛКМ / Shift+колесо: сменить навык",

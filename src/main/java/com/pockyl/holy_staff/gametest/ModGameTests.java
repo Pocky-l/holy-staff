@@ -163,17 +163,59 @@ public final class ModGameTests {
         });
     }
 
+    @GameTest(template = "empty", timeoutTicks = 60, batch = "creativeBlessedGroundHasNoCooldownAndHealsDouble")
+    public static void creativeBlessedGroundHasNoCooldownAndHealsDouble(GameTestHelper helper) {
+        ServerPlayer player = caster(helper, new Vec3(0.5, 3, 0.5), Skill.BLESSED_GROUND, ModItems.CREATIVE_HOLY_STAFF.get());
+        player.setXRot(-90.0F);
+        player.setHealth(2.0F);
+
+        helper.assertTrue(SkillCaster.tryCast(player), "the cast succeeds");
+        helper.assertTrue(player.getData(ModAttachments.COOLDOWNS).isReady(Skill.BLESSED_GROUND, helper.getLevel().getGameTime()),
+                "the creative staff has no cooldown");
+        helper.runAfterDelay(16, () -> {
+            helper.assertTrue(near(player.getHealth(), 16.0F), "the caster is healed by 2 x 7, got " + player.getHealth());
+            player.discard();
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 40, batch = "creativeHolyBeamReachesTwiceAsFar")
+    public static void creativeHolyBeamReachesTwiceAsFar(GameTestHelper helper) {
+        Mob cow = still(helper, EntityType.COW, new Vec3(24.5, 3, 0.5));
+        cow.setHealth(1.0F);
+        ServerPlayer regular = caster(helper, new Vec3(0.5, 3, 0.5), Skill.HOLY_BEAM);
+        regular.lookAt(EntityAnchorArgument.Anchor.EYES, cow.getBoundingBox().getCenter());
+        helper.assertFalse(SkillCaster.tryCast(regular), "24 blocks is out of the regular beam's range");
+        regular.discard();
+
+        ServerPlayer creative = caster(helper, new Vec3(0.5, 3, 0.5), Skill.HOLY_BEAM, ModItems.CREATIVE_HOLY_STAFF.get());
+        creative.lookAt(EntityAnchorArgument.Anchor.EYES, cow.getBoundingBox().getCenter());
+        helper.assertTrue(SkillCaster.tryCast(creative), "the creative beam reaches 24 blocks");
+        // The first step of 2 health is doubled.
+        helper.runAfterDelay(2, () -> {
+            helper.assertTrue(near(cow.getHealth(), 5.0F), "the first heal step is doubled, got " + cow.getHealth());
+            Channels.stop(creative);
+            creative.discard();
+            helper.succeed();
+        });
+    }
+
     private static boolean near(float actual, float expected) {
         return Math.abs(actual - expected) < EPSILON;
     }
 
     @SuppressWarnings("removal")
     private static ServerPlayer caster(GameTestHelper helper, Vec3 relative, Skill skill) {
+        return caster(helper, relative, skill, ModItems.HOLY_STAFF.get());
+    }
+
+    @SuppressWarnings("removal")
+    private static ServerPlayer caster(GameTestHelper helper, Vec3 relative, Skill skill, HolyStaffItem item) {
         ServerPlayer player = helper.makeMockServerPlayerInLevel();
         Vec3 pos = helper.absoluteVec(relative);
         player.moveTo(pos.x, pos.y, pos.z, 0.0F, 0.0F);
         player.setNoGravity(true);
-        ItemStack staff = new ItemStack(ModItems.HOLY_STAFF.get());
+        ItemStack staff = new ItemStack(item);
         staff.set(ModDataComponents.SELECTED_SKILL, skill);
         player.setItemInHand(InteractionHand.MAIN_HAND, staff);
         return player;

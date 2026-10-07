@@ -34,6 +34,8 @@
 - **Skill bar**: icons of the three skills with cooldown sweeps and seconds left, the selected one framed in gold;
   a cast bar while channelling and the skill name when you switch.
 - **Sounds**: chimes, a humming beam and a deep bell when the staff strikes the ground.
+- **Creative Holy Staff**: a pink-and-rose-gold staff for creative mode with the same skills, but no cooldowns,
+  double healing and twice the beam range. Not craftable; find it in the creative tabs.
 - Heals players, pets, animals, villagers and golems; hostile mobs are not healed (configurable).
 - Right click still opens chests and doors; right clicking a mob heals it instead of trading or making a pet sit.
   The staff never attacks or breaks blocks.
@@ -61,7 +63,7 @@
 ```
 
 `A` Golden Apple, `G` Gold Ingot, `B` Blaze Rod. The recipe unlocks when you get a golden apple.
-In creative mode the staff is in the **Pocky Mods** tab and in **Combat**.
+In creative mode the staff and the Creative Holy Staff are in the **Pocky Mods** tab and in **Combat**.
 
 ## Configuration
 

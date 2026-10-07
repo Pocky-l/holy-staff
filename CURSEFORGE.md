@@ -23,6 +23,7 @@ All skills are cast with **right click**. Switch the skill with **left click** o
 - Skill bar with cooldowns and a cast bar
 - Heals players, pets, animals, villagers and golems (hostile mobs are not healed, configurable)
 - Every number is configurable
+- Creative Holy Staff: a pink staff for creative mode with no cooldowns, double healing and twice the beam range
 
 ## Crafting
 Golden apple, two gold ingots and two blaze rods (see the recipe book).

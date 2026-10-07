@@ -53,12 +53,12 @@ public final class Channels {
         return channel == null ? null : channel.skill;
     }
 
-    static void start(ServerPlayer player, Skill skill, @Nullable LivingEntity target, int duration) {
-        Channel channel = new Channel(player, skill, target, duration);
+    static void start(ServerPlayer player, HolyStaffItem staff, Skill skill, @Nullable LivingEntity target, int duration) {
+        Channel channel = new Channel(player, skill, target, duration, staff.healMultiplier(), staff.beamRange());
         ACTIVE.put(player.getUUID(), channel);
         ModNetwork.sendToNearby(player, new ChannelPayload(player.getId(), skill.ordinal(), target == null ? -1 : target.getId(), duration));
         ItemStack stack = player.getMainHandItem();
-        if (stack.getItem() instanceof HolyStaffItem staff && ModNetwork.hasMod(player)) {
+        if (stack.is(staff) && ModNetwork.hasMod(player)) {
             channel.animatedStackId = GeoItem.getOrAssignId(stack, player.serverLevel());
             staff.triggerAnim(player, channel.animatedStackId, HolyStaffItem.CAST_CONTROLLER, HolyStaffItem.channelAnimation(skill));
         }
@@ -118,7 +118,7 @@ public final class Channels {
     private static boolean tickBeam(Channel channel) {
         LivingEntity target = channel.target;
         ServerPlayer player = channel.player;
-        double maxRange = Config.beamRange() + BEAM_BREAK_EXTRA_RANGE;
+        double maxRange = channel.beamRange + BEAM_BREAK_EXTRA_RANGE;
         if (target == null || !target.isAlive() || !Healing.canHeal(target) || target.level() != player.level()
                 || target.distanceToSqr(player) > maxRange * maxRange) {
             return false;
@@ -128,7 +128,7 @@ public final class Channels {
             return false;
         }
         if (channel.age % BEAM_HEAL_INTERVAL == 0) {
-            Healing.heal(target, Config.beamHealPerSecond() * BEAM_HEAL_INTERVAL / 20.0F, Skill.HOLY_BEAM);
+            Healing.heal(target, Config.beamHealPerSecond() * BEAM_HEAL_INTERVAL / 20.0F * channel.healMultiplier, Skill.HOLY_BEAM);
             if (channel.age % (BEAM_HEAL_INTERVAL * 2) == 0) {
                 player.level().playSound(null, target.getX(), target.getY(), target.getZ(), ModSounds.HEAL.get(),
                         SoundSource.PLAYERS, 0.6F, 0.9F + player.getRandom().nextFloat() * 0.2F);
@@ -146,7 +146,7 @@ public final class Channels {
             float radius = Config.sanctuaryRadius();
             for (LivingEntity ally : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(radius, 3, radius),
                     entity -> Healing.canHeal(entity) && horizontalDistanceSqr(entity, player) <= radius * radius)) {
-                Healing.heal(ally, Config.sanctuaryHeal(), Skill.SANCTUARY);
+                Healing.heal(ally, Config.sanctuaryHeal() * channel.healMultiplier, Skill.SANCTUARY);
             }
             player.level().playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.SANCTUARY_PULSE.get(),
                     SoundSource.PLAYERS, 1.2F, 1.0F);
@@ -192,16 +192,21 @@ public final class Channels {
         @Nullable
         private final LivingEntity target;
         private final int duration;
+        private final float healMultiplier;
+        private final double beamRange;
         private int age;
         private int lostSight;
         @Nullable
         private Long animatedStackId;
 
-        private Channel(ServerPlayer player, Skill skill, @Nullable LivingEntity target, int duration) {
+        private Channel(ServerPlayer player, Skill skill, @Nullable LivingEntity target, int duration, float healMultiplier,
+                double beamRange) {
             this.player = player;
             this.skill = skill;
             this.target = target;
             this.duration = duration;
+            this.healMultiplier = healMultiplier;
+            this.beamRange = beamRange;
         }
     }
 }

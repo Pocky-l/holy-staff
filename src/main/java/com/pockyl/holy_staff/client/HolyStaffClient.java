@@ -55,6 +55,6 @@ public final class HolyStaffClient {
             public HumanoidModel.ArmPose getArmPose(LivingEntity entity, InteractionHand hand, ItemStack stack) {
                 return hand == InteractionHand.MAIN_HAND ? StaffPoses.armPose(entity) : StaffPoses.HOLD.getValue();
             }
-        }, ModItems.HOLY_STAFF.get());
+        }, ModItems.HOLY_STAFF.get(), ModItems.CREATIVE_HOLY_STAFF.get());
     }
 }

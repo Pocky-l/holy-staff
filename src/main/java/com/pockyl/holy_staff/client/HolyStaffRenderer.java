@@ -21,11 +21,14 @@ import com.pockyl.holy_staff.skill.Skill;
 
 /**
  * Renders assets/holy_staff/{geo,animations,textures}/item/holy_staff.*; the crystal glows via the _glowmask texture.
+ * The Creative Holy Staff shares model and animations and uses creative_holy_staff(_glowmask).png.
  * While the holder channels a skill, the staff is re-oriented to match the channel arm pose ({@link StaffPoses}).
  */
 public final class HolyStaffRenderer extends GeoItemRenderer<HolyStaffItem> {
-    public HolyStaffRenderer() {
-        super(new DefaultedItemGeoModel<>(HolyStaff.id("holy_staff")));
+    public HolyStaffRenderer(boolean creative) {
+        super(creative
+                ? new DefaultedItemGeoModel<HolyStaffItem>(HolyStaff.id("holy_staff")).withAltTexture(HolyStaff.id("creative_holy_staff"))
+                : new DefaultedItemGeoModel<>(HolyStaff.id("holy_staff")));
         addRenderLayer(new AutoGlowingGeoLayer<>(this));
     }
 
