@@ -1,29 +1,29 @@
 package com.pockyl.holy_staff.network;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent;
 
-import com.pockyl.holy_staff.HolyStaff;
 import com.pockyl.holy_staff.skill.Channels;
 import com.pockyl.holy_staff.skill.Skill;
 
+import java.util.function.Supplier;
+
 /** Client to server: the player cancels the Holy Beam. Sanctuary cannot be cancelled. */
-public record StopChannelPayload() implements CustomPacketPayload {
-    public static final Type<StopChannelPayload> TYPE = new Type<>(HolyStaff.id("stop_channel"));
+public record StopChannelPayload() {
     public static final StopChannelPayload INSTANCE = new StopChannelPayload();
 
-    public static final StreamCodec<ByteBuf, StopChannelPayload> STREAM_CODEC = StreamCodec.unit(INSTANCE);
-
-    @Override
-    public Type<StopChannelPayload> type() {
-        return TYPE;
+    public void encode(FriendlyByteBuf buf) {
     }
 
-    public static void handle(StopChannelPayload payload, IPayloadContext context) {
-        if (Channels.current(context.player()) == Skill.HOLY_BEAM) {
-            Channels.stop(context.player());
+    public static StopChannelPayload decode(FriendlyByteBuf buf) {
+        return INSTANCE;
+    }
+
+    public static void handle(StopChannelPayload payload, Supplier<NetworkEvent.Context> context) {
+        ServerPlayer player = context.get().getSender();
+        if (player != null && Channels.current(player) == Skill.HOLY_BEAM) {
+            Channels.stop(player);
         }
     }
 }
