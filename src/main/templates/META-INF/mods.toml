@@ -10,26 +10,25 @@ displayName="${mod_name}"
 authors="${mod_authors}"
 displayURL="${mod_url}"
 logoFile="logo.png"
-enumExtensions="META-INF/enumextensions.json"
 description='''${mod_description}'''
 
 [[dependencies.${mod_id}]]
-    modId="neoforge"
-    type="required"
-    versionRange="[${neo_version},)"
+    modId="forge"
+    mandatory=true
+    versionRange="${forge_version_range}"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
     modId="minecraft"
-    type="required"
+    mandatory=true
     versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
     modId="geckolib"
-    type="required"
+    mandatory=true
     versionRange="[${geckolib_version},)"
     ordering="NONE"
     side="BOTH"
