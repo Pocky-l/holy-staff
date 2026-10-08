@@ -7,6 +7,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.ItemStack;
@@ -14,6 +16,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
+import com.pockyl.holy_staff.Config;
 import com.pockyl.holy_staff.HolyStaff;
 import com.pockyl.holy_staff.entity.BlessedGround;
 import com.pockyl.holy_staff.item.HolyStaffItem;
@@ -198,6 +201,131 @@ public final class ModGameTests {
             creative.discard();
             helper.succeed();
         });
+    }
+
+    @GameTest(template = "empty", batch = "mobsFightingPlayersOrTheirPetsAreHostile")
+    public static void mobsFightingPlayersOrTheirPetsAreHostile(GameTestHelper helper) {
+        ServerPlayer player = caster(helper, new Vec3(0.5, 3, 0.5), Skill.BLESSED_GROUND);
+        Wolf pet = still(helper, EntityType.WOLF, new Vec3(2.5, 3, 0.5));
+        pet.setOwnerUUID(player.getUUID());
+        Mob cow = still(helper, EntityType.COW, new Vec3(4.5, 3, 0.5));
+        IronGolem golem = still(helper, EntityType.IRON_GOLEM, new Vec3(0.5, 3, 4.5));
+        Zombie zombie = still(helper, EntityType.ZOMBIE, new Vec3(4.5, 3, 4.5));
+
+        helper.assertFalse(Healing.isHostile(player), "players are never hostile");
+        helper.assertFalse(Healing.isHostile(golem), "an idle golem is not hostile");
+        golem.setTarget(zombie);
+        helper.assertTrue(Healing.canHeal(golem), "a golem fighting a monster is still an ally");
+        golem.setTarget(cow);
+        helper.assertTrue(Healing.canHeal(golem), "a golem chasing a cow does not fight the players");
+        golem.setTarget(pet);
+        helper.assertFalse(Healing.canHeal(golem), "a golem attacking a player's pet is not healed");
+        golem.setTarget(player);
+        helper.assertFalse(Healing.canHeal(golem), "a golem attacking a player is not healed");
+        golem.setTarget(null);
+        helper.assertTrue(Healing.canHeal(golem), "a golem that stopped attacking is an ally again");
+
+        pet.setPersistentAngerTarget(zombie.getUUID());
+        pet.startPersistentAngerTimer();
+        helper.assertTrue(Healing.canHeal(pet), "a pet angry at a monster is still an ally");
+        pet.setPersistentAngerTarget(player.getUUID());
+        helper.assertFalse(Healing.canHeal(pet), "a wolf angry at a player is not healed");
+        player.discard();
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 60, batch = "blessedGroundSkipsMobsAttackingPlayers")
+    public static void blessedGroundSkipsMobsAttackingPlayers(GameTestHelper helper) {
+        ServerPlayer player = caster(helper, new Vec3(0.5, 3, 0.5), Skill.BLESSED_GROUND);
+        player.setXRot(-90.0F);
+        Mob cow = still(helper, EntityType.COW, new Vec3(2.0, 3, 0.5));
+        cow.setHealth(1.0F);
+        Wolf wolf = still(helper, EntityType.WOLF, new Vec3(0.5, 3, 2.0));
+        wolf.setHealth(1.0F);
+        wolf.setTarget(player);
+        IronGolem golem = still(helper, EntityType.IRON_GOLEM, new Vec3(-1.0, 3, 0.5));
+        golem.setHealth(10.0F);
+        golem.setPersistentAngerTarget(player.getUUID());
+        golem.startPersistentAngerTimer();
+
+        helper.assertTrue(SkillCaster.tryCast(player), "the cast succeeds");
+        helper.runAfterDelay(16, () -> {
+            helper.assertTrue(near(cow.getHealth(), 8.0F), "the passive cow is healed by 7, got " + cow.getHealth());
+            helper.assertTrue(wolf.getHealth() == 1.0F, "the wolf attacking the caster is not healed, got " + wolf.getHealth());
+            helper.assertTrue(golem.getHealth() == 10.0F, "the golem angry at the caster is not healed, got " + golem.getHealth());
+            player.discard();
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 60, batch = "healMonstersHealsHostileMobsToo")
+    public static void healMonstersHealsHostileMobsToo(GameTestHelper helper) {
+        ServerPlayer player = caster(helper, new Vec3(0.5, 3, 0.5), Skill.BLESSED_GROUND);
+        player.setXRot(-90.0F);
+        Wolf wolf = still(helper, EntityType.WOLF, new Vec3(2.0, 3, 0.5));
+        wolf.setHealth(1.0F);
+        wolf.setTarget(player);
+        Zombie zombie = still(helper, EntityType.ZOMBIE, new Vec3(0.5, 3, 2.0));
+        zombie.setHealth(1.0F);
+
+        Config.setHealMonsters(true);
+        try {
+            helper.assertTrue(SkillCaster.tryCast(player), "the cast succeeds");
+        } catch (RuntimeException e) {
+            Config.setHealMonsters(false);
+            throw e;
+        }
+        helper.runAfterDelay(16, () -> {
+            try {
+                helper.assertTrue(near(wolf.getHealth(), 8.0F), "the attacking wolf is healed, got " + wolf.getHealth());
+                helper.assertTrue(near(zombie.getHealth(), 8.0F), "the zombie is healed, got " + zombie.getHealth());
+            } finally {
+                Config.setHealMonsters(false);
+            }
+            player.discard();
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 60, batch = "holyBeamRejectsAndDropsHostileTargets")
+    public static void holyBeamRejectsAndDropsHostileTargets(GameTestHelper helper) {
+        ServerPlayer player = caster(helper, new Vec3(0.5, 3, 0.5), Skill.HOLY_BEAM);
+        Wolf wolf = still(helper, EntityType.WOLF, new Vec3(6.5, 3, 0.5));
+        wolf.setHealth(1.0F);
+        wolf.setTarget(player);
+        player.lookAt(EntityAnchorArgument.Anchor.EYES, wolf.getBoundingBox().getCenter());
+
+        helper.assertFalse(SkillCaster.tryCast(player), "no beam on a wolf attacking the caster");
+        helper.assertTrue(player.getData(ModAttachments.COOLDOWNS).isReady(Skill.HOLY_BEAM, helper.getLevel().getGameTime()),
+                "the rejected cast does not start the cooldown");
+
+        wolf.setTarget(null);
+        helper.assertTrue(SkillCaster.tryCast(player), "the beam starts once the wolf calms down");
+        helper.runAfterDelay(1, () -> wolf.setTarget(player));
+        helper.runAfterDelay(4, () -> {
+            helper.assertFalse(Channels.isChannelling(player), "the beam breaks when its target turns on the players");
+            helper.assertTrue(near(wolf.getHealth(), 3.0F), "only the first step healed the wolf, got " + wolf.getHealth());
+            player.discard();
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 20, batch = "sanctuaryThrowsBackAngryNeutralMobs")
+    public static void sanctuaryThrowsBackAngryNeutralMobs(GameTestHelper helper) {
+        ServerPlayer player = caster(helper, new Vec3(0.5, 3, 0.5), Skill.SANCTUARY);
+        Wolf calm = helper.spawnWithNoFreeWill(EntityType.WOLF, new Vec3(-1.5, 3, 0.5));
+        calm.setNoGravity(true);
+        Wolf angry = helper.spawnWithNoFreeWill(EntityType.WOLF, new Vec3(0.5, 3, 2.5));
+        angry.setNoGravity(true);
+        angry.setPersistentAngerTarget(player.getUUID());
+        angry.startPersistentAngerTimer();
+
+        // Leftover mobs of earlier tests may stand nearby, so check the two wolves rather than the number of hits.
+        Channels.knockBackEnemies(player);
+        helper.assertTrue(calm.getDeltaMovement().lengthSqr() < 1.0E-4, "the calm wolf stays");
+        helper.assertTrue(angry.getDeltaMovement().z > 0, "the angry wolf is pushed away from the caster");
+        player.discard();
+        helper.succeed();
     }
 
     private static boolean near(float actual, float expected) {

@@ -4,8 +4,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -29,7 +27,8 @@ import java.util.UUID;
 
 /**
  * Channelled skills (Holy Beam, Sanctuary) on the server. A channel runs for a fixed time, is ticked with its level
- * and ends early when the caster cancels it, dies, puts the staff away or (beam) loses the target.
+ * and ends early when the caster cancels it, dies, puts the staff away or (beam) loses the target or the target turns
+ * hostile.
  */
 @EventBusSubscriber(modid = HolyStaff.MOD_ID)
 public final class Channels {
@@ -154,12 +153,12 @@ public final class Channels {
         return true;
     }
 
-    /** Throws back hostile mobs and mobs that target the caster. Returns how many were hit. */
+    /** Throws back hostile mobs ({@link Healing#isHostile}), which the pulses then do not heal. Returns how many were hit. */
     public static int knockBackEnemies(ServerPlayer player) {
         double radius = Config.sanctuaryKnockbackRadius();
         int hit = 0;
         for (LivingEntity entity : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(radius),
-                entity -> entity != player && isEnemyOf(entity, player) && entity.distanceToSqr(player) <= radius * radius)) {
+                entity -> entity.isAlive() && Healing.isHostile(entity) && entity.distanceToSqr(player) <= radius * radius)) {
             double dx = player.getX() - entity.getX();
             double dz = player.getZ() - entity.getZ();
             if (dx * dx + dz * dz < 1.0E-4) {
@@ -171,13 +170,6 @@ public final class Channels {
             hit++;
         }
         return hit;
-    }
-
-    private static boolean isEnemyOf(LivingEntity entity, Player player) {
-        if (!entity.isAlive() || entity instanceof Player) {
-            return false;
-        }
-        return entity instanceof Enemy || entity instanceof Mob mob && mob.getTarget() == player;
     }
 
     private static double horizontalDistanceSqr(LivingEntity a, LivingEntity b) {

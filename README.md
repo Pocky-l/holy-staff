@@ -36,7 +36,10 @@
 - **Sounds**: chimes, a humming beam and a deep bell when the staff strikes the ground.
 - **Creative Holy Staff**: a pink-and-rose-gold staff for creative mode with the same skills, but no cooldowns,
   double healing and twice the beam range. Not craftable; find it in the creative tabs.
-- Heals players, pets, animals, villagers and golems; hostile mobs are not healed (configurable).
+- **Who is an ally**: players (always), pets, animals, villagers and golems. Hostile mobs are not healed
+  (configurable): monsters, and any mob that is attacking a player or a player's pet right now, such as an angry
+  wolf, bee, iron golem or llama. Once it calms down it is an ally again. Holy Beam breaks when its target turns
+  hostile, and Sanctuary throws hostile mobs back instead of healing them.
 - Right click still opens chests and doors; right clicking a mob heals it instead of trading or making a pet sit.
   The staff never attacks or breaks blocks.
 
@@ -71,7 +74,7 @@ In creative mode the staff and the Creative Holy Staff are in the **Pocky Mods**
 
 | Option | Default | Description |
 |---|---|---|
-| `healMonsters` | `false` | Whether hostile mobs can be healed |
+| `healMonsters` | `false` | Whether hostile mobs (monsters and mobs attacking players or their pets) can be healed |
 | `blessedGround.amount` / `radius` / `delay` / `range` / `cooldown` | `7` / `3` / `0.6` s / `20` / `3` s | Blessed Ground |
 | `holyBeam.healPerSecond` / `duration` / `range` / `movementMultiplier` / `cooldown` | `8` / `3` s / `16` / `0.3` / `10` s | Holy Beam |
 | `sanctuary.healPerPulse` / `pulseInterval` / `duration` / `radius` / `knockbackRadius` / `knockbackStrength` / `cooldown` | `2.5` / `0.5` s / `3` s / `7` / `5` / `1.5` / `20` s | Sanctuary |
