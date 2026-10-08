@@ -29,7 +29,8 @@ All skills are cast with **right click**. Switch the skill with **left click** o
 Golden apple, two gold ingots and two blaze rods (see the recipe book).
 
 ## Requirements
-[NeoForge](https://neoforged.net) 1.21.1 and [GeckoLib](https://www.curseforge.com/minecraft/mc-mods/geckolib), on both client and server.
+[NeoForge](https://neoforged.net) 1.21.1 or [Forge](https://files.minecraftforge.net) 1.20.1, and
+[GeckoLib](https://www.curseforge.com/minecraft/mc-mods/geckolib), on both client and server.
 
 ## Screenshots
 

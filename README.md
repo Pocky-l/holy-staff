@@ -10,11 +10,21 @@
 
 <p align="center">
   <a href="https://www.curseforge.com/minecraft/mc-mods/holy-staff"><img alt="CurseForge downloads" src="https://img.shields.io/curseforge/dt/1725465?logo=curseforge&label=CurseForge&color=F16436"></a>
-  <img alt="Minecraft 1.21.1" src="https://img.shields.io/badge/Minecraft-1.21.1-62B47A">
+  <img alt="Minecraft 1.21.1 | 1.20.1" src="https://img.shields.io/badge/Minecraft-1.21.1%20%7C%201.20.1-62B47A">
   <a href="https://neoforged.net"><img alt="NeoForge" src="https://img.shields.io/badge/Loader-NeoForge-F16436"></a>
+  <a href="https://files.minecraftforge.net"><img alt="Forge" src="https://img.shields.io/badge/Loader-Forge-DFA86A"></a>
   <a href="https://www.curseforge.com/minecraft/mc-mods/geckolib"><img alt="Requires GeckoLib" src="https://img.shields.io/badge/Requires-GeckoLib-8A5CF6"></a>
   <img alt="License MIT" src="https://img.shields.io/badge/License-MIT-blue">
 </p>
+
+## Supported versions
+
+| Minecraft | Loader | Branch |
+|---|---|---|
+| 1.21.1 | [NeoForge](https://neoforged.net) | `main` |
+| 1.20.1 | [Forge](https://files.minecraftforge.net) 47.x | `1.20.1` |
+
+Both versions have the same features; only the NeoForge version has an in-game config screen.
 
 ## Features
 
@@ -67,7 +77,7 @@ In creative mode the staff and the Creative Holy Staff are in the **Pocky Mods**
 
 ## Configuration
 
-`config/holy_staff-common.toml` (also in the in-game config screen):
+`config/holy_staff-common.toml` (on NeoForge also in the in-game config screen):
 
 | Option | Default | Description |
 |---|---|---|
@@ -80,8 +90,10 @@ In creative mode the staff and the Creative Holy Staff are in the **Pocky Mods**
 
 ## Installation
 
-1. Install [NeoForge](https://neoforged.net) for Minecraft 1.21.1.
-2. Install [GeckoLib](https://www.curseforge.com/minecraft/mc-mods/geckolib) 4.9 or newer.
+1. Install [NeoForge](https://neoforged.net) for Minecraft 1.21.1, or [Forge](https://files.minecraftforge.net) 47.x for
+   Minecraft 1.20.1.
+2. Install [GeckoLib](https://www.curseforge.com/minecraft/mc-mods/geckolib) for your version: 4.9 or newer on
+   1.21.1, 4.8.4 or newer on 1.20.1.
 3. Put this mod into the `mods` folder (on the client and on the server).
 
 ## Building

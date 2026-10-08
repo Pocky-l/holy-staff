@@ -4,6 +4,14 @@ All notable changes to this mod are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0+1.20.1] - Unreleased
+### Added
+- Ported to Minecraft 1.20.1 (Forge).
+
+### Changed
+- On Forge there is no in-game config screen: change the settings in `config/holy_staff-common.toml` and
+  `config/holy_staff-client.toml`.
+
 ## [1.1.0] - 2026-10-07
 ### Added
 - Creative Holy Staff: a pink-and-rose-gold staff for creative mode with the same three skills, but no cooldowns,
