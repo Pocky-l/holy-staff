@@ -12,11 +12,11 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import com.pockyl.holy_staff.Config;
 import com.pockyl.holy_staff.HolyStaff;
@@ -32,7 +32,7 @@ import java.util.Locale;
  * Green "+3.5" numbers flying out of healed entities: they pop out of the body in an arc (up and to a random side),
  * follow the entity, and fade out. Bigger heals get bigger numbers. Heals of the local player go to {@link SelfHealHud}.
  */
-@EventBusSubscriber(modid = HolyStaff.MOD_ID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = HolyStaff.MOD_ID, value = Dist.CLIENT)
 public final class HealNumbers {
     private static final int LIFETIME = 30;
     private static final int MAX_POPUPS = 64;
@@ -66,7 +66,7 @@ public final class HealNumbers {
             return;
         }
         if (POPUPS.size() >= MAX_POPUPS) {
-            POPUPS.removeFirst();
+            POPUPS.remove(0);
         }
         Vec3 offset = new Vec3((RANDOM.nextDouble() - 0.5) * entity.getBbWidth() * 0.6, entity.getBbHeight() * 0.85,
                 (RANDOM.nextDouble() - 0.5) * entity.getBbWidth() * 0.6);
@@ -83,7 +83,10 @@ public final class HealNumbers {
     }
 
     @SubscribeEvent
-    public static void onClientTick(ClientTickEvent.Post event) {
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
         if (Minecraft.getInstance().level == null) {
             POPUPS.clear();
             return;
@@ -112,7 +115,7 @@ public final class HealNumbers {
         Minecraft minecraft = Minecraft.getInstance();
         Camera camera = event.getCamera();
         Vec3 cameraPos = camera.getPosition();
-        float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
+        float partialTick = event.getPartialTick();
         PoseStack poseStack = event.getPoseStack();
         MultiBufferSource.BufferSource buffers = minecraft.renderBuffers().bufferSource();
         Font font = minecraft.font;

@@ -5,10 +5,10 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import com.pockyl.holy_staff.HolyStaff;
 import com.pockyl.holy_staff.item.HolyStaffItem;
@@ -18,7 +18,7 @@ import com.pockyl.holy_staff.skill.Healing;
  * While the staff is in the main hand, right clicking a healable mob heals it instead of interacting with it
  * (trading, sitting pets, ...), and the staff never attacks.
  */
-@EventBusSubscriber(modid = HolyStaff.MOD_ID)
+@Mod.EventBusSubscriber(modid = HolyStaff.MOD_ID)
 public final class StaffInteractionEvents {
     private StaffInteractionEvents() {
     }

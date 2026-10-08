@@ -8,10 +8,10 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.server.ServerStoppedEvent;
-import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoItem;
 
@@ -31,7 +31,7 @@ import java.util.UUID;
  * Channelled skills (Holy Beam, Sanctuary) on the server. A channel runs for a fixed time, is ticked with its level
  * and ends early when the caster cancels it, dies, puts the staff away or (beam) loses the target.
  */
-@EventBusSubscriber(modid = HolyStaff.MOD_ID)
+@Mod.EventBusSubscriber(modid = HolyStaff.MOD_ID)
 public final class Channels {
     private static final int BEAM_HEAL_INTERVAL = 5;
     /** The beam survives this many ticks without line of sight (pillars, mobs walking around corners). */
@@ -82,8 +82,8 @@ public final class Channels {
     }
 
     @SubscribeEvent
-    public static void onLevelTick(LevelTickEvent.Post event) {
-        if (!(event.getLevel() instanceof ServerLevel level) || ACTIVE.isEmpty()) {
+    public static void onLevelTick(TickEvent.LevelTickEvent event) {
+        if (event.phase != TickEvent.Phase.END || !(event.level instanceof ServerLevel level) || ACTIVE.isEmpty()) {
             return;
         }
         for (Channel channel : new ArrayList<>(ACTIVE.values())) {

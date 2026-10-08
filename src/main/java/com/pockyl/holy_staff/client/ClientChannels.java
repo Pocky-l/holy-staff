@@ -6,11 +6,11 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.MovementInputUpdateEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.MovementInputUpdateEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.Nullable;
 
 import com.pockyl.holy_staff.Config;
@@ -25,7 +25,7 @@ import java.util.Map;
  * Channels of players seen by this client, from {@link ChannelPayload}. Also applies the movement restriction of the
  * local caster: slow and no jumping during Holy Beam, rooted during Sanctuary.
  */
-@EventBusSubscriber(modid = HolyStaff.MOD_ID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = HolyStaff.MOD_ID, value = Dist.CLIENT)
 public final class ClientChannels {
     /** Safety margin after the expected end, in case the stop packet was lost. */
     private static final int EXPIRY_GRACE = 20;
@@ -68,7 +68,10 @@ public final class ClientChannels {
     }
 
     @SubscribeEvent
-    public static void onClientTick(ClientTickEvent.Post event) {
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.level == null) {
             STATES.clear();

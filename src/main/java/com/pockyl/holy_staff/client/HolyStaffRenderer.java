@@ -6,10 +6,10 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RenderLivingEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.model.DefaultedItemGeoModel;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
@@ -63,7 +63,7 @@ public final class HolyStaffRenderer extends GeoItemRenderer<HolyStaffItem> {
     }
 
     /** The living entity being rendered right now, so held items can know who holds them. */
-    @EventBusSubscriber(modid = HolyStaff.MOD_ID, value = Dist.CLIENT)
+    @Mod.EventBusSubscriber(modid = HolyStaff.MOD_ID, value = Dist.CLIENT)
     public static final class Holder {
         @Nullable
         private static LivingEntity current;

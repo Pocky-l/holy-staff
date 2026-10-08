@@ -1,8 +1,8 @@
 package com.pockyl.holy_staff.item;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -13,17 +13,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoItem;
-import software.bernie.geckolib.animatable.client.GeoRenderProvider;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.PlayState;
-import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import com.pockyl.holy_staff.Config;
-import com.pockyl.holy_staff.client.HolyStaffRenderer;
+import com.pockyl.holy_staff.client.HolyStaffClient;
 import com.pockyl.holy_staff.registry.ModAttachments;
 import com.pockyl.holy_staff.registry.ModDataComponents;
 import com.pockyl.holy_staff.skill.Channels;
@@ -50,7 +51,7 @@ public final class HolyStaffItem extends Item implements GeoItem {
     private final boolean creative;
 
     public HolyStaffItem(Properties properties, boolean creative) {
-        super(properties.component(ModDataComponents.SELECTED_SKILL.get(), Skill.BLESSED_GROUND));
+        super(properties);
         this.creative = creative;
         GeoItem.registerSyncedAnimatable(this);
     }
@@ -73,7 +74,13 @@ public final class HolyStaffItem extends Item implements GeoItem {
     }
 
     public static Skill selected(ItemStack stack) {
-        return stack.getOrDefault(ModDataComponents.SELECTED_SKILL, Skill.BLESSED_GROUND);
+        CompoundTag tag = stack.getTag();
+        return tag == null ? Skill.BLESSED_GROUND : Skill.byName(tag.getString(ModDataComponents.SELECTED_SKILL), Skill.BLESSED_GROUND);
+    }
+
+    /** Stores the selected skill on the stack, without any checks. */
+    public static void setSelected(ItemStack stack, Skill skill) {
+        stack.getOrCreateTag().putString(ModDataComponents.SELECTED_SKILL, skill.getSerializedName());
     }
 
     /** Selects the skill on the staff in the main hand. Not allowed while channelling. */
@@ -82,7 +89,7 @@ public final class HolyStaffItem extends Item implements GeoItem {
         if (!(stack.getItem() instanceof HolyStaffItem) || Channels.isChannelling(player)) {
             return false;
         }
-        stack.set(ModDataComponents.SELECTED_SKILL, skill);
+        setSelected(stack, skill);
         return true;
     }
 
@@ -100,7 +107,7 @@ public final class HolyStaffItem extends Item implements GeoItem {
         // Consume (no swing) while on cooldown, so the off-hand item is not used instead when right click is held.
         if (level.isClientSide()) {
             Skill skill = selected(stack);
-            boolean ready = player.getData(ModAttachments.COOLDOWNS).isReady(skill, level.getGameTime());
+            boolean ready = ModAttachments.cooldowns(player).isReady(skill, level.getGameTime());
             boolean swing = ready && !skill.isChannelled();
             return swing ? InteractionResultHolder.success(stack) : InteractionResultHolder.consume(stack);
         }
@@ -117,12 +124,12 @@ public final class HolyStaffItem extends Item implements GeoItem {
 
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        // GeckoLib ids and skill changes update components; that must not bob the item.
+        // GeckoLib ids and skill changes update the NBT tag; that must not bob the item.
         return slotChanged || !newStack.is(this);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable("tooltip.holy_staff.description").withStyle(ChatFormatting.GRAY));
         if (creative) {
             tooltip.add(Component.translatable("tooltip.holy_staff.creative").withStyle(ChatFormatting.LIGHT_PURPLE));
@@ -157,19 +164,10 @@ public final class HolyStaffItem extends Item implements GeoItem {
         return cache;
     }
 
-    // GeckoLib only invokes this on the client, so the renderer class is never loaded on a dedicated server.
+    // Forge only invokes this on the physical client, so the client classes are never loaded on a dedicated server.
+    // It runs inside the Item constructor: the extensions must read the creative flag lazily.
     @Override
-    public void createGeoRenderer(Consumer<GeoRenderProvider> consumer) {
-        consumer.accept(new GeoRenderProvider() {
-            private HolyStaffRenderer renderer;
-
-            @Override
-            public BlockEntityWithoutLevelRenderer getGeoItemRenderer() {
-                if (renderer == null) {
-                    renderer = new HolyStaffRenderer(creative);
-                }
-                return renderer;
-            }
-        });
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(HolyStaffClient.itemExtensions(this));
     }
 }

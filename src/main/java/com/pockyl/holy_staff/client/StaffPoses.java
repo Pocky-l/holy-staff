@@ -8,28 +8,22 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.neoforged.fml.common.asm.enumextension.EnumProxy;
-import net.neoforged.neoforge.client.IArmPoseTransformer;
 
 import com.pockyl.holy_staff.skill.Skill;
 
 /**
  * Body and staff poses. Holding: the staff arm is held forward like a mage ready to cast, the staff upright.
  * Holy Beam: the arm points at the target with the crystal ahead. Sanctuary: both hands lean on the staff planted in
- * the ground in front of the caster. The arm poses are enum extensions of {@link HumanoidModel.ArmPose}
- * (see META-INF/enumextensions.json).
+ * the ground in front of the caster. The arm poses are Forge enum extensions of {@link HumanoidModel.ArmPose}.
  *
  * <p>Angles: an item-space rotation about X adds to the display rotation (models/item/holy_staff.json, third person
  * X = {@value #DISPLAY_PITCH} degrees), while raising the arm forward by A tilts the item back by A. The renderer
  * rotates the staff by {@link #staffPitch} to keep it where each pose wants it.
  */
 public final class StaffPoses {
-    public static final EnumProxy<HumanoidModel.ArmPose> HOLD = new EnumProxy<>(HumanoidModel.ArmPose.class, false,
-            (IArmPoseTransformer) StaffPoses::poseHold);
-    public static final EnumProxy<HumanoidModel.ArmPose> BEAM = new EnumProxy<>(HumanoidModel.ArmPose.class, false,
-            (IArmPoseTransformer) StaffPoses::poseBeam);
-    public static final EnumProxy<HumanoidModel.ArmPose> PLANTED = new EnumProxy<>(HumanoidModel.ArmPose.class, true,
-            (IArmPoseTransformer) StaffPoses::posePlanted);
+    public static final HumanoidModel.ArmPose HOLD = HumanoidModel.ArmPose.create("HOLY_STAFF_HOLD", false, StaffPoses::poseHold);
+    public static final HumanoidModel.ArmPose BEAM = HumanoidModel.ArmPose.create("HOLY_STAFF_BEAM", false, StaffPoses::poseBeam);
+    public static final HumanoidModel.ArmPose PLANTED = HumanoidModel.ArmPose.create("HOLY_STAFF_PLANTED", true, StaffPoses::posePlanted);
 
     /** Third-person display pitch of the item model, in degrees. Keep in sync with holy_staff.json. */
     static final float DISPLAY_PITCH = 27.0F;
@@ -53,12 +47,12 @@ public final class StaffPoses {
     public static HumanoidModel.ArmPose armPose(LivingEntity entity) {
         Skill skill = ClientChannels.skillOf(entity);
         if (skill == Skill.HOLY_BEAM) {
-            return BEAM.getValue();
+            return BEAM;
         }
         if (skill == Skill.SANCTUARY) {
-            return PLANTED.getValue();
+            return PLANTED;
         }
-        return HOLD.getValue();
+        return HOLD;
     }
 
     private static ModelPart arm(HumanoidModel<?> model, HumanoidArm arm) {

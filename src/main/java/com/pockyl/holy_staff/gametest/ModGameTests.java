@@ -1,8 +1,12 @@
 package com.pockyl.holy_staff.gametest;
 
+import com.mojang.authlib.GameProfile;
+import io.netty.channel.embedded.EmbeddedChannel;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
@@ -11,19 +15,20 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.minecraftforge.gametest.GameTestHolder;
+import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 import com.pockyl.holy_staff.HolyStaff;
 import com.pockyl.holy_staff.entity.BlessedGround;
 import com.pockyl.holy_staff.item.HolyStaffItem;
 import com.pockyl.holy_staff.registry.ModAttachments;
-import com.pockyl.holy_staff.registry.ModDataComponents;
 import com.pockyl.holy_staff.registry.ModItems;
 import com.pockyl.holy_staff.skill.Channels;
 import com.pockyl.holy_staff.skill.Healing;
 import com.pockyl.holy_staff.skill.Skill;
 import com.pockyl.holy_staff.skill.SkillCaster;
+
+import java.util.UUID;
 
 /**
  * In-game tests, run headless by {@code gradlew runGameTestServer}.
@@ -135,7 +140,7 @@ public final class ModGameTests {
 
         helper.assertFalse(SkillCaster.tryCast(player), "no ally aimed at, no beam");
         helper.assertFalse(Channels.isChannelling(player), "not channelling");
-        helper.assertTrue(player.getData(ModAttachments.COOLDOWNS).isReady(Skill.HOLY_BEAM, helper.getLevel().getGameTime()),
+        helper.assertTrue(ModAttachments.cooldowns(player).isReady(Skill.HOLY_BEAM, helper.getLevel().getGameTime()),
                 "a failed cast does not start the cooldown");
         player.discard();
         helper.succeed();
@@ -170,7 +175,7 @@ public final class ModGameTests {
         player.setHealth(2.0F);
 
         helper.assertTrue(SkillCaster.tryCast(player), "the cast succeeds");
-        helper.assertTrue(player.getData(ModAttachments.COOLDOWNS).isReady(Skill.BLESSED_GROUND, helper.getLevel().getGameTime()),
+        helper.assertTrue(ModAttachments.cooldowns(player).isReady(Skill.BLESSED_GROUND, helper.getLevel().getGameTime()),
                 "the creative staff has no cooldown");
         helper.runAfterDelay(16, () -> {
             helper.assertTrue(near(player.getHealth(), 16.0F), "the caster is healed by 2 x 7, got " + player.getHealth());
@@ -204,20 +209,42 @@ public final class ModGameTests {
         return Math.abs(actual - expected) < EPSILON;
     }
 
-    @SuppressWarnings("removal")
     private static ServerPlayer caster(GameTestHelper helper, Vec3 relative, Skill skill) {
         return caster(helper, relative, skill, ModItems.HOLY_STAFF.get());
     }
 
-    @SuppressWarnings("removal")
     private static ServerPlayer caster(GameTestHelper helper, Vec3 relative, Skill skill, HolyStaffItem item) {
-        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        ServerPlayer player = mockPlayer(helper);
         Vec3 pos = helper.absoluteVec(relative);
         player.moveTo(pos.x, pos.y, pos.z, 0.0F, 0.0F);
         player.setNoGravity(true);
         ItemStack staff = new ItemStack(item);
-        staff.set(ModDataComponents.SELECTED_SKILL, skill);
+        HolyStaffItem.setSelected(staff, skill);
         player.setItemInHand(InteractionHand.MAIN_HAND, staff);
+        return player;
+    }
+
+    /**
+     * The mock player of {@link GameTestHelper#makeMockServerPlayerInLevel()}, but with an embedded network channel:
+     * Forge's login hooks need one, and the vanilla mock connection has none. Nothing on the other end announces this
+     * mod's network channel, so the staff treats the player like a client without the mod and sends it no packets.
+     */
+    private static ServerPlayer mockPlayer(GameTestHelper helper) {
+        ServerPlayer player = new ServerPlayer(helper.getLevel().getServer(), helper.getLevel(),
+                new GameProfile(UUID.randomUUID(), "test-mock-player")) {
+            @Override
+            public boolean isSpectator() {
+                return false;
+            }
+
+            @Override
+            public boolean isCreative() {
+                return true;
+            }
+        };
+        Connection connection = new Connection(PacketFlow.SERVERBOUND);
+        new EmbeddedChannel(connection);
+        helper.getLevel().getServer().getPlayerList().placeNewPlayer(connection, player);
         return player;
     }
 

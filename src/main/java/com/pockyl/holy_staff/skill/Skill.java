@@ -1,9 +1,5 @@
 package com.pockyl.holy_staff.skill;
 
-import com.mojang.serialization.Codec;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 
@@ -23,9 +19,6 @@ public enum Skill implements StringRepresentable {
 
     private static final Skill[] VALUES = values();
 
-    public static final Codec<Skill> CODEC = StringRepresentable.fromEnum(Skill::values);
-    public static final StreamCodec<ByteBuf, Skill> STREAM_CODEC = ByteBufCodecs.idMapper(Skill::byId, Skill::ordinal);
-
     private final String name;
     private final int color;
     private final IntSupplier cooldown;
@@ -38,6 +31,16 @@ public enum Skill implements StringRepresentable {
 
     public static Skill byId(int id) {
         return VALUES[Math.floorMod(id, VALUES.length)];
+    }
+
+    /** The skill saved under the given serialized name, or {@code fallback} for unknown names. */
+    public static Skill byName(String name, Skill fallback) {
+        for (Skill skill : VALUES) {
+            if (skill.name.equals(name)) {
+                return skill;
+            }
+        }
+        return fallback;
     }
 
     /** The skill {@code steps} places further in the list, wrapping around. */

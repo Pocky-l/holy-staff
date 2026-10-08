@@ -5,18 +5,17 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import com.pockyl.holy_staff.HolyStaff;
 import com.pockyl.holy_staff.item.HolyStaffItem;
+import com.pockyl.holy_staff.network.ModNetwork;
 import com.pockyl.holy_staff.network.SelectSkillPayload;
 import com.pockyl.holy_staff.network.StopChannelPayload;
-import com.pockyl.holy_staff.registry.ModDataComponents;
 import com.pockyl.holy_staff.registry.ModSounds;
 import com.pockyl.holy_staff.skill.Skill;
 
@@ -25,7 +24,7 @@ import com.pockyl.holy_staff.skill.Skill;
  * the optional next-skill key (unbound by default) switch the selected skill; a new click of either mouse button cancels Holy Beam. Attacking and
  * block breaking are suppressed while holding the staff.
  */
-@EventBusSubscriber(modid = HolyStaff.MOD_ID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = HolyStaff.MOD_ID, value = Dist.CLIENT)
 public final class ClientInputHandler {
     private static boolean attackHeldLastTick;
     private static boolean useHeldLastTick;
@@ -54,7 +53,7 @@ public final class ClientInputHandler {
             event.setSwingHand(false);
             if (channel == Skill.HOLY_BEAM && !useHeldLastTick && !pressHandledThisTick) {
                 pressHandledThisTick = true;
-                PacketDistributor.sendToServer(StopChannelPayload.INSTANCE);
+                ModNetwork.sendToServer(StopChannelPayload.INSTANCE);
             }
             return;
         }
@@ -69,7 +68,7 @@ public final class ClientInputHandler {
         }
         pressHandledThisTick = true;
         if (channel == Skill.HOLY_BEAM) {
-            PacketDistributor.sendToServer(StopChannelPayload.INSTANCE);
+            ModNetwork.sendToServer(StopChannelPayload.INSTANCE);
         } else if (channel == null) {
             switchSkill(player, 1);
         }
@@ -79,16 +78,19 @@ public final class ClientInputHandler {
     public static void onScroll(InputEvent.MouseScrollingEvent event) {
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer player = minecraft.player;
-        if (player != null && minecraft.screen == null && player.isShiftKeyDown() && holdsStaff(player) && event.getScrollDeltaY() != 0) {
+        if (player != null && minecraft.screen == null && player.isShiftKeyDown() && holdsStaff(player) && event.getScrollDelta() != 0) {
             event.setCanceled(true);
             if (ClientChannels.skillOf(player) == null) {
-                switchSkill(player, event.getScrollDeltaY() > 0 ? -1 : 1);
+                switchSkill(player, event.getScrollDelta() > 0 ? -1 : 1);
             }
         }
     }
 
     @SubscribeEvent
-    public static void onClientTick(ClientTickEvent.Post event) {
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer player = minecraft.player;
         while (ModKeyMappings.NEXT_SKILL.consumeClick()) {
@@ -104,9 +106,9 @@ public final class ClientInputHandler {
     private static void switchSkill(LocalPlayer player, int steps) {
         ItemStack stack = player.getMainHandItem();
         Skill next = HolyStaffItem.selected(stack).cycle(steps);
-        // Shown at once; the server confirms by syncing the same component.
-        stack.set(ModDataComponents.SELECTED_SKILL, next);
-        PacketDistributor.sendToServer(new SelectSkillPayload(next));
+        // Shown at once; the server confirms by syncing the same item data.
+        HolyStaffItem.setSelected(stack, next);
+        ModNetwork.sendToServer(new SelectSkillPayload(next));
         SkillHud.onSkillSwitched(next);
         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(ModSounds.SKILL_SWITCH.get(), 1.0F, 0.6F));
     }

@@ -1,16 +1,16 @@
 package com.pockyl.holy_staff.client;
 
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import com.pockyl.holy_staff.HolyStaff;
 
@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Heals received by the local player: green numbers popping up right next to the health bar. */
-@EventBusSubscriber(modid = HolyStaff.MOD_ID, value = Dist.CLIENT)
-public final class SelfHealHud implements LayeredDraw.Layer {
+@Mod.EventBusSubscriber(modid = HolyStaff.MOD_ID, value = Dist.CLIENT)
+public final class SelfHealHud implements IGuiOverlay {
     private static final int LIFETIME = 30;
     private static final int MAX_POPUPS = 8;
     private static final float RISE = 16.0F;
@@ -34,13 +34,16 @@ public final class SelfHealHud implements LayeredDraw.Layer {
 
     static void add(String text, float amount) {
         if (POPUPS.size() >= MAX_POPUPS) {
-            POPUPS.removeFirst();
+            POPUPS.remove(0);
         }
         POPUPS.add(new Popup(text, 1.0F + Math.min(10.0F, amount) * 0.05F, RANDOM.nextInt(7) - 3));
     }
 
     @SubscribeEvent
-    public static void onClientTick(ClientTickEvent.Post event) {
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
         if (Minecraft.getInstance().level == null) {
             POPUPS.clear();
             return;
@@ -49,12 +52,11 @@ public final class SelfHealHud implements LayeredDraw.Layer {
     }
 
     @Override
-    public void render(GuiGraphics graphics, DeltaTracker deltaTracker) {
+    public void render(ForgeGui gui, GuiGraphics graphics, float partialTick, int screenWidth, int screenHeight) {
         Minecraft minecraft = Minecraft.getInstance();
         if (POPUPS.isEmpty() || minecraft.options.hideGui || minecraft.player == null || minecraft.player.isSpectator()) {
             return;
         }
-        float partialTick = deltaTracker.getGameTimeDeltaPartialTick(false);
         Font font = minecraft.font;
         int anchorX = graphics.guiWidth() / 2 - HEARTS_LEFT + HEARTS_WIDTH + 3;
         int anchorY = graphics.guiHeight() - HEARTS_BOTTOM;

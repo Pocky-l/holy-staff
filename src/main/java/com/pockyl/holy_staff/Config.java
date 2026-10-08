@@ -1,12 +1,12 @@
 package com.pockyl.holy_staff;
 
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 /** Gameplay numbers (COMMON) and visuals (CLIENT). Accessors fall back to defaults while a config is not loaded. */
 public final class Config {
-    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
+    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
-    private static final ModConfigSpec.BooleanValue HEAL_MONSTERS = BUILDER
+    private static final ForgeConfigSpec.BooleanValue HEAL_MONSTERS = BUILDER
             .comment("Whether the staff heals hostile mobs (zombies, skeletons, ...).")
             .translation("holy_staff.configuration.healMonsters")
             .define("healMonsters", false);
@@ -15,23 +15,23 @@ public final class Config {
         BUILDER.translation("holy_staff.configuration.blessedGround").push("blessedGround");
     }
 
-    private static final ModConfigSpec.DoubleValue BLESSED_HEAL = BUILDER
+    private static final ForgeConfigSpec.DoubleValue BLESSED_HEAL = BUILDER
             .comment("Health restored by Blessed Ground to every ally inside when it bursts.")
             .translation("holy_staff.configuration.blessedHeal")
             .defineInRange("amount", 7.0, 0.5, 100.0);
-    private static final ModConfigSpec.DoubleValue BLESSED_RADIUS = BUILDER
+    private static final ForgeConfigSpec.DoubleValue BLESSED_RADIUS = BUILDER
             .comment("Radius of Blessed Ground in blocks.")
             .translation("holy_staff.configuration.blessedRadius")
             .defineInRange("radius", 3.0, 1.0, 16.0);
-    private static final ModConfigSpec.DoubleValue BLESSED_DELAY = BUILDER
+    private static final ForgeConfigSpec.DoubleValue BLESSED_DELAY = BUILDER
             .comment("Seconds between placing Blessed Ground and its burst (the circle fills up meanwhile).")
             .translation("holy_staff.configuration.blessedDelay")
             .defineInRange("delay", 0.6, 0.0, 10.0);
-    private static final ModConfigSpec.DoubleValue BLESSED_RANGE = BUILDER
+    private static final ForgeConfigSpec.DoubleValue BLESSED_RANGE = BUILDER
             .comment("How far away (in blocks) Blessed Ground can be placed.")
             .translation("holy_staff.configuration.blessedRange")
             .defineInRange("range", 20.0, 2.0, 64.0);
-    private static final ModConfigSpec.DoubleValue BLESSED_COOLDOWN = BUILDER
+    private static final ForgeConfigSpec.DoubleValue BLESSED_COOLDOWN = BUILDER
             .comment("Blessed Ground cooldown in seconds.")
             .translation("holy_staff.configuration.blessedCooldown")
             .defineInRange("cooldown", 3.0, 0.0, 600.0);
@@ -40,23 +40,23 @@ public final class Config {
         BUILDER.pop().translation("holy_staff.configuration.holyBeam").push("holyBeam");
     }
 
-    private static final ModConfigSpec.DoubleValue BEAM_HEAL = BUILDER
+    private static final ForgeConfigSpec.DoubleValue BEAM_HEAL = BUILDER
             .comment("Health per second restored by Holy Beam to its target.")
             .translation("holy_staff.configuration.beamHeal")
             .defineInRange("healPerSecond", 8.0, 0.5, 200.0);
-    private static final ModConfigSpec.DoubleValue BEAM_DURATION = BUILDER
+    private static final ForgeConfigSpec.DoubleValue BEAM_DURATION = BUILDER
             .comment("Maximum channel time of Holy Beam in seconds.")
             .translation("holy_staff.configuration.beamDuration")
             .defineInRange("duration", 3.0, 0.5, 30.0);
-    private static final ModConfigSpec.DoubleValue BEAM_RANGE = BUILDER
+    private static final ForgeConfigSpec.DoubleValue BEAM_RANGE = BUILDER
             .comment("Range of Holy Beam in blocks.")
             .translation("holy_staff.configuration.beamRange")
             .defineInRange("range", 16.0, 2.0, 64.0);
-    private static final ModConfigSpec.DoubleValue BEAM_SLOWDOWN = BUILDER
+    private static final ForgeConfigSpec.DoubleValue BEAM_SLOWDOWN = BUILDER
             .comment("Movement speed multiplier while channelling Holy Beam.")
             .translation("holy_staff.configuration.beamSlowdown")
             .defineInRange("movementMultiplier", 0.3, 0.0, 1.0);
-    private static final ModConfigSpec.DoubleValue BEAM_COOLDOWN = BUILDER
+    private static final ForgeConfigSpec.DoubleValue BEAM_COOLDOWN = BUILDER
             .comment("Holy Beam cooldown in seconds (starts when the channel starts).")
             .translation("holy_staff.configuration.beamCooldown")
             .defineInRange("cooldown", 10.0, 0.0, 600.0);
@@ -65,31 +65,31 @@ public final class Config {
         BUILDER.pop().translation("holy_staff.configuration.sanctuary").push("sanctuary");
     }
 
-    private static final ModConfigSpec.DoubleValue SANCTUARY_HEAL = BUILDER
+    private static final ForgeConfigSpec.DoubleValue SANCTUARY_HEAL = BUILDER
             .comment("Health restored to every ally in the area by each Sanctuary pulse.")
             .translation("holy_staff.configuration.sanctuaryHeal")
             .defineInRange("healPerPulse", 2.5, 0.5, 100.0);
-    private static final ModConfigSpec.DoubleValue SANCTUARY_PULSE = BUILDER
+    private static final ForgeConfigSpec.DoubleValue SANCTUARY_PULSE = BUILDER
             .comment("Seconds between Sanctuary pulses.")
             .translation("holy_staff.configuration.sanctuaryPulse")
             .defineInRange("pulseInterval", 0.5, 0.1, 10.0);
-    private static final ModConfigSpec.DoubleValue SANCTUARY_DURATION = BUILDER
+    private static final ForgeConfigSpec.DoubleValue SANCTUARY_DURATION = BUILDER
             .comment("How long the caster channels Sanctuary, in seconds. The caster cannot move meanwhile.")
             .translation("holy_staff.configuration.sanctuaryDuration")
             .defineInRange("duration", 3.0, 0.5, 30.0);
-    private static final ModConfigSpec.DoubleValue SANCTUARY_RADIUS = BUILDER
+    private static final ForgeConfigSpec.DoubleValue SANCTUARY_RADIUS = BUILDER
             .comment("Radius of the healing area in blocks.")
             .translation("holy_staff.configuration.sanctuaryRadius")
             .defineInRange("radius", 7.0, 1.0, 32.0);
-    private static final ModConfigSpec.DoubleValue SANCTUARY_KNOCKBACK_RADIUS = BUILDER
+    private static final ForgeConfigSpec.DoubleValue SANCTUARY_KNOCKBACK_RADIUS = BUILDER
             .comment("Enemies within this radius are thrown back when Sanctuary starts.")
             .translation("holy_staff.configuration.sanctuaryKnockbackRadius")
             .defineInRange("knockbackRadius", 5.0, 0.0, 32.0);
-    private static final ModConfigSpec.DoubleValue SANCTUARY_KNOCKBACK = BUILDER
+    private static final ForgeConfigSpec.DoubleValue SANCTUARY_KNOCKBACK = BUILDER
             .comment("Knockback strength of Sanctuary.")
             .translation("holy_staff.configuration.sanctuaryKnockback")
             .defineInRange("knockbackStrength", 1.5, 0.0, 10.0);
-    private static final ModConfigSpec.DoubleValue SANCTUARY_COOLDOWN = BUILDER
+    private static final ForgeConfigSpec.DoubleValue SANCTUARY_COOLDOWN = BUILDER
             .comment("Sanctuary cooldown in seconds (starts when the channel starts).")
             .translation("holy_staff.configuration.sanctuaryCooldown")
             .defineInRange("cooldown", 20.0, 0.0, 3600.0);
@@ -98,20 +98,20 @@ public final class Config {
         BUILDER.pop();
     }
 
-    public static final ModConfigSpec SPEC = BUILDER.build();
+    public static final ForgeConfigSpec SPEC = BUILDER.build();
 
-    private static final ModConfigSpec.Builder CLIENT_BUILDER = new ModConfigSpec.Builder();
+    private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
 
-    private static final ModConfigSpec.BooleanValue SHOW_HEAL_NUMBERS = CLIENT_BUILDER
+    private static final ForgeConfigSpec.BooleanValue SHOW_HEAL_NUMBERS = CLIENT_BUILDER
             .comment("Show floating numbers above healed entities.")
             .translation("holy_staff.configuration.showHealNumbers")
             .define("showHealNumbers", true);
-    private static final ModConfigSpec.BooleanValue SHOW_SKILL_HUD = CLIENT_BUILDER
+    private static final ForgeConfigSpec.BooleanValue SHOW_SKILL_HUD = CLIENT_BUILDER
             .comment("Show the skill bar next to the hotbar while holding the staff.")
             .translation("holy_staff.configuration.showSkillHud")
             .define("showSkillHud", true);
 
-    public static final ModConfigSpec CLIENT_SPEC = CLIENT_BUILDER.build();
+    public static final ForgeConfigSpec CLIENT_SPEC = CLIENT_BUILDER.build();
 
     private Config() {
     }
@@ -200,7 +200,7 @@ public final class Config {
         return (int) Math.round(seconds * 20);
     }
 
-    private static <T> T get(ModConfigSpec spec, ModConfigSpec.ConfigValue<T> value) {
+    private static <T> T get(ForgeConfigSpec spec, ForgeConfigSpec.ConfigValue<T> value) {
         return spec.isLoaded() ? value.get() : value.getDefault();
     }
 }

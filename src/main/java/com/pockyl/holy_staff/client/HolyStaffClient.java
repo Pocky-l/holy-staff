@@ -1,42 +1,36 @@
 package com.pockyl.holy_staff.client;
 
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
-import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
-import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
-import net.neoforged.neoforge.client.gui.ConfigurationScreen;
-import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
+import net.minecraftforge.eventbus.api.IEventBus;
 
-import com.pockyl.holy_staff.HolyStaff;
+import com.pockyl.holy_staff.item.HolyStaffItem;
 import com.pockyl.holy_staff.registry.ModEntities;
-import com.pockyl.holy_staff.registry.ModItems;
 import com.pockyl.holy_staff.registry.ModParticles;
 
-@Mod(value = HolyStaff.MOD_ID, dist = Dist.CLIENT)
+/** Client-only setup, called from the mod constructor on the physical client. */
 public final class HolyStaffClient {
-    public HolyStaffClient(IEventBus modBus, ModContainer container) {
-        container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
-
-        modBus.addListener(ModKeyMappings::register);
-        modBus.addListener(HolyStaffClient::registerGuiLayers);
-        modBus.addListener(HolyStaffClient::registerParticles);
-        modBus.addListener(HolyStaffClient::registerRenderers);
-        modBus.addListener(HolyStaffClient::registerClientExtensions);
+    private HolyStaffClient() {
     }
 
-    private static void registerGuiLayers(RegisterGuiLayersEvent event) {
-        event.registerAbove(VanillaGuiLayers.HOTBAR, HolyStaff.id("skills"), new SkillHud());
-        event.registerAbove(VanillaGuiLayers.PLAYER_HEALTH, HolyStaff.id("self_heal"), new SelfHealHud());
+    public static void init(IEventBus modBus) {
+        modBus.addListener(ModKeyMappings::register);
+        modBus.addListener(HolyStaffClient::registerGuiOverlays);
+        modBus.addListener(HolyStaffClient::registerParticles);
+        modBus.addListener(HolyStaffClient::registerRenderers);
+    }
+
+    private static void registerGuiOverlays(RegisterGuiOverlaysEvent event) {
+        event.registerAbove(VanillaGuiOverlay.HOTBAR.id(), "skills", new SkillHud());
+        event.registerAbove(VanillaGuiOverlay.PLAYER_HEALTH.id(), "self_heal", new SelfHealHud());
     }
 
     private static void registerParticles(RegisterParticleProvidersEvent event) {
@@ -48,13 +42,23 @@ public final class HolyStaffClient {
         event.registerEntityRenderer(ModEntities.BLESSED_GROUND.get(), BlessedGroundRenderer::new);
     }
 
-    // Rendering itself is handled by GeckoLib; this poses the arms holding the staff and while channelling.
-    private static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        event.registerItem(new IClientItemExtensions() {
+    /** The GeckoLib renderer of the staff, and the arm poses holding it and while channelling. */
+    public static IClientItemExtensions itemExtensions(HolyStaffItem item) {
+        return new IClientItemExtensions() {
+            private HolyStaffRenderer renderer;
+
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                if (renderer == null) {
+                    renderer = new HolyStaffRenderer(item.isCreative());
+                }
+                return renderer;
+            }
+
             @Override
             public HumanoidModel.ArmPose getArmPose(LivingEntity entity, InteractionHand hand, ItemStack stack) {
-                return hand == InteractionHand.MAIN_HAND ? StaffPoses.armPose(entity) : StaffPoses.HOLD.getValue();
+                return hand == InteractionHand.MAIN_HAND ? StaffPoses.armPose(entity) : StaffPoses.HOLD;
             }
-        }, ModItems.HOLY_STAFF.get(), ModItems.CREATIVE_HOLY_STAFF.get());
+        };
     }
 }

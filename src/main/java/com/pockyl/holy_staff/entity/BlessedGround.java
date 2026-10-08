@@ -52,9 +52,9 @@ public final class BlessedGround extends Entity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(RADIUS, 3.0F);
-        builder.define(DELAY, 12);
+    protected void defineSynchedData() {
+        entityData.define(RADIUS, 3.0F);
+        entityData.define(DELAY, 12);
     }
 
     @Override

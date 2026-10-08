@@ -8,10 +8,10 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import com.pockyl.holy_staff.Config;
 import com.pockyl.holy_staff.HolyStaff;
@@ -24,7 +24,7 @@ import com.pockyl.holy_staff.skill.SkillCaster;
  * Aiming help for Blessed Ground: while it is the selected skill, a translucent circle shows where it would land
  * (the same spot the server picks). Gold when ready, grey while on cooldown.
  */
-@EventBusSubscriber(modid = HolyStaff.MOD_ID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = HolyStaff.MOD_ID, value = Dist.CLIENT)
 public final class AimPreview {
     private static final int READY = 0xFFE58A;
     private static final int COOLDOWN = 0x9A9A9A;
@@ -44,9 +44,9 @@ public final class AimPreview {
             return;
         }
 
-        float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
+        float partialTick = event.getPartialTick();
         long gameTime = player.level().getGameTime();
-        boolean ready = player.getData(ModAttachments.COOLDOWNS).isReady(Skill.BLESSED_GROUND, gameTime);
+        boolean ready = ModAttachments.cooldowns(player).isReady(Skill.BLESSED_GROUND, gameTime);
         Vec3 target = SkillCaster.groundTarget(player).subtract(event.getCamera().getPosition());
         float radius = Config.blessedRadius();
         float time = gameTime + partialTick;

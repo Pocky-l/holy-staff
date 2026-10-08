@@ -1,26 +1,54 @@
 package com.pockyl.holy_staff.registry;
 
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import org.jetbrains.annotations.Nullable;
 
 import com.pockyl.holy_staff.HolyStaff;
 import com.pockyl.holy_staff.skill.SkillCooldowns;
 
-import java.util.function.Supplier;
-
+/** Per-player data, attached to every player as a Forge capability. */
 public final class ModAttachments {
-    public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, HolyStaff.MOD_ID);
-
     /** Skill cooldowns of a player. Transient: cooldowns reset on relog, which is harmless for a few seconds of waiting. */
-    public static final Supplier<AttachmentType<SkillCooldowns>> COOLDOWNS = ATTACHMENT_TYPES.register("cooldowns",
-            () -> AttachmentType.builder(SkillCooldowns::new).build());
+    public static final Capability<SkillCooldowns> COOLDOWNS = CapabilityManager.get(new CapabilityToken<>() {
+    });
 
     private ModAttachments() {
     }
 
     public static void register(IEventBus modBus) {
-        ATTACHMENT_TYPES.register(modBus);
+        modBus.addListener((RegisterCapabilitiesEvent event) -> event.register(SkillCooldowns.class));
+        MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, ModAttachments::attach);
+    }
+
+    /** The cooldowns of the player on the side the player object belongs to. */
+    public static SkillCooldowns cooldowns(Player player) {
+        // A player whose capabilities were already invalidated (removed after death) has nothing left to cast.
+        return player.getCapability(COOLDOWNS).orElseGet(SkillCooldowns::new);
+    }
+
+    private static void attach(AttachCapabilitiesEvent<Entity> event) {
+        if (event.getObject() instanceof Player) {
+            event.addCapability(HolyStaff.id("cooldowns"), new CooldownsProvider());
+        }
+    }
+
+    private static final class CooldownsProvider implements ICapabilityProvider {
+        private final LazyOptional<SkillCooldowns> cooldowns = LazyOptional.of(SkillCooldowns::new);
+
+        @Override
+        public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction side) {
+            return COOLDOWNS.orEmpty(capability, cooldowns);
+        }
     }
 }

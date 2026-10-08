@@ -45,7 +45,7 @@ public final class SkillCaster {
             return false;
         }
         Skill skill = HolyStaffItem.selected(stack);
-        SkillCooldowns cooldowns = player.getData(ModAttachments.COOLDOWNS);
+        SkillCooldowns cooldowns = ModAttachments.cooldowns(player);
         long now = player.level().getGameTime();
         if (!cooldowns.isReady(skill, now)) {
             return false;

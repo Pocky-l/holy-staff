@@ -1,15 +1,15 @@
 package com.pockyl.holy_staff.client;
 
 import net.minecraft.client.AttackIndicatorStatus;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import org.jetbrains.annotations.Nullable;
 
 import com.pockyl.holy_staff.Config;
@@ -22,7 +22,7 @@ import com.pockyl.holy_staff.skill.SkillCooldowns;
  * While the staff is held: the three skills next to the hotbar (the selected one raised and framed in gold, cooldown
  * sweeps and seconds left, control hints), the name of a newly selected skill, and a cast bar while channelling.
  */
-public final class SkillHud implements LayeredDraw.Layer {
+public final class SkillHud implements IGuiOverlay {
     private static final int SLOT = 22;
     private static final int GAP = 3;
     private static final int GAP_TO_HOTBAR = 8;
@@ -47,7 +47,7 @@ public final class SkillHud implements LayeredDraw.Layer {
     }
 
     @Override
-    public void render(GuiGraphics graphics, DeltaTracker deltaTracker) {
+    public void render(ForgeGui gui, GuiGraphics graphics, float partialTick, int screenWidth, int screenHeight) {
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer player = minecraft.player;
         if (player == null || minecraft.options.hideGui || player.isSpectator() || !Config.showSkillHud()
@@ -55,8 +55,7 @@ public final class SkillHud implements LayeredDraw.Layer {
             return;
         }
 
-        float partialTick = deltaTracker.getGameTimeDeltaPartialTick(false);
-        SkillCooldowns cooldowns = player.getData(ModAttachments.COOLDOWNS);
+        SkillCooldowns cooldowns = ModAttachments.cooldowns(player);
         Skill selected = HolyStaffItem.selected(player.getMainHandItem());
         float now = player.level().getGameTime() + partialTick;
         int count = Skill.values().length;
