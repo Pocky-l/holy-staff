@@ -4,7 +4,7 @@ All notable changes to this mod are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.1] - Unreleased
+## [1.1.1] - 2026-10-09
 ### Fixed
 - The staff no longer heals mobs that are attacking players or their pets: angry wolves, iron golems, bees, llamas,
   polar bears, endermen and the like (modded mobs too). They count as allies again once they calm down; the
