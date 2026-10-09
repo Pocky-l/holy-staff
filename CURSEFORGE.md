@@ -21,7 +21,8 @@ All skills are cast with **right click**. Switch the skill with **left click** o
 - Animated 3D staff, taller than the player, with a glowing crystal and casting poses
 - Green heal numbers flying out of healed entities; your own heals appear next to your health bar
 - Skill bar with cooldowns and a cast bar
-- Heals players, pets, animals, villagers and golems (hostile mobs are not healed, configurable)
+- Heals players, pets, animals, villagers and golems. Hostile mobs are not healed (configurable): monsters and any
+  mob attacking a player or a pet, like an angry wolf, bee or iron golem
 - Every number is configurable
 - Creative Holy Staff: a pink staff for creative mode with no cooldowns, double healing and twice the beam range
 

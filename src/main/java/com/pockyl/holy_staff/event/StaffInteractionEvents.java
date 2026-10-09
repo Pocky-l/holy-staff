@@ -47,8 +47,10 @@ public final class StaffInteractionEvents {
         }
     }
 
+    // Not canHeal: the client cannot see mob targets and anger, and both sides must agree on cancelling.
     private static boolean shouldSkip(Player player, InteractionHand hand, Entity target) {
-        return hand == InteractionHand.MAIN_HAND && target instanceof LivingEntity living && Healing.canHeal(living) && holdsStaff(player);
+        return hand == InteractionHand.MAIN_HAND && target instanceof LivingEntity living && Healing.isAllyKind(living)
+                && holdsStaff(player);
     }
 
     private static boolean holdsStaff(Player player) {

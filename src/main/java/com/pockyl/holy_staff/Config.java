@@ -7,7 +7,7 @@ public final class Config {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
     private static final ModConfigSpec.BooleanValue HEAL_MONSTERS = BUILDER
-            .comment("Whether the staff heals hostile mobs (zombies, skeletons, ...).")
+            .comment("Whether the staff heals hostile mobs: monsters (zombies, skeletons, ...) and mobs attacking players or their pets.")
             .translation("holy_staff.configuration.healMonsters")
             .define("healMonsters", false);
 
@@ -118,6 +118,11 @@ public final class Config {
 
     public static boolean healMonsters() {
         return get(SPEC, HEAL_MONSTERS);
+    }
+
+    /** For game tests; not saved to the file. */
+    public static void setHealMonsters(boolean value) {
+        HEAL_MONSTERS.set(value);
     }
 
     public static float blessedHeal() {
