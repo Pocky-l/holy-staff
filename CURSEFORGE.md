@@ -62,6 +62,8 @@ Made by **Pocky** · [source code](https://github.com/Pocky-l/holy-staff) · sou
 
 [![Turbo for Distant Horizons](https://raw.githubusercontent.com/Pocky-l/holy-staff/main/docs/more-mods/dhturbo.png)](https://www.curseforge.com/minecraft/mc-mods/turbo-for-distant-horizons) **[Turbo for Distant Horizons](https://www.curseforge.com/minecraft/mc-mods/turbo-for-distant-horizons)** - Distant Horizons terrain generated many times faster
 
+[![Pocky Shaders](https://raw.githubusercontent.com/Pocky-l/holy-staff/main/docs/more-mods/pocky_shaders.png)](https://www.curseforge.com/minecraft/mc-mods/pocky-shaders) **[Pocky Shaders](https://www.curseforge.com/minecraft/mc-mods/pocky-shaders)** - a cosy, natural shader pack that sets itself up
+
 **⚔️ Gear & gameplay**
 
 [![Rancher's Vacpack](https://raw.githubusercontent.com/Pocky-l/holy-staff/main/docs/more-mods/vacpack.png)](https://www.curseforge.com/minecraft/mc-mods/ranchers-vacpack) **[Rancher's Vacpack](https://www.curseforge.com/minecraft/mc-mods/ranchers-vacpack)** - a Slime Rancher vacuum gun for items and small mobs
