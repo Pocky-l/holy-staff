@@ -5,43 +5,41 @@
 <h1 align="center">Holy Staff</h1>
 
 <p align="center">
-  A holy staff with three healing skills, cooldowns and floating heal numbers.
+  <b>A blessed staff for healers</b> - three healing skills on one button, light effects, sounds and green numbers that show exactly how much you healed.
 </p>
 
 <p align="center">
   <a href="https://www.curseforge.com/minecraft/mc-mods/holy-staff"><img alt="CurseForge downloads" src="https://img.shields.io/curseforge/dt/1725465?logo=curseforge&label=CurseForge&color=F16436"></a>
-  <img alt="Minecraft 1.21.1" src="https://img.shields.io/badge/Minecraft-1.21.1-62B47A">
+  <a href="https://www.minecraft.net"><img alt="Minecraft 1.21.1" src="https://img.shields.io/badge/Minecraft-1.21.1-62B47A"></a>
   <a href="https://neoforged.net"><img alt="NeoForge" src="https://img.shields.io/badge/Loader-NeoForge-F16436"></a>
   <a href="https://www.curseforge.com/minecraft/mc-mods/geckolib"><img alt="Requires GeckoLib" src="https://img.shields.io/badge/Requires-GeckoLib-8A5CF6"></a>
-  <img alt="License MIT" src="https://img.shields.io/badge/License-MIT-blue">
+  <a href="LICENSE"><img alt="License MIT" src="https://img.shields.io/badge/License-MIT-blue"></a>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/blessed-ground.jpg" alt="Blessed Ground: light fills the rune circle and heals everyone inside" width="720">
 </p>
 
 ## Features
 
-- **Holy Staff**: an animated 3D staff with a floating, glowing crystal inside a golden halo, taller than the
-  player. Held forward like a mage ready to cast, pointed at the target while beaming and planted in the ground during Sanctuary.
-- **Three skills, one button**: right click casts the selected skill. Switch skills with **left click** or
-  **sneak + mouse wheel**; the skill bar next to the hotbar shows which one is selected.
-  - **Blessed Ground**: while it is selected, a translucent circle shows where it will land, so you can aim it.
-    Casting marks a rune circle under the aimed ally or block. Light fills it from the centre for
-    0.6 s, then the circle flashes, light rays shoot up and every ally inside is healed at once.
-  - **Holy Beam**: a beam of light locks onto the aimed ally and heals it strongly for up to 3 s, ideal for keeping
-    a tank alive. While channelling you walk slowly and cannot jump; click again to cancel.
-  - **Sanctuary**: you plant the staff and cannot move for 3 s. Enemies around are thrown back by a shockwave, a
-    dome of light rises around you and every pulse heals all allies inside. Longest cooldown.
-- **Floating heal numbers**: every heal makes a green number (`+6`) fly out of the healed entity, showing how much
-  health was restored, with golden sparkles. Heals you receive pop up right next to your health bar.
-- **Skill bar**: icons of the three skills with cooldown sweeps and seconds left, the selected one framed in gold;
-  a cast bar while channelling and the skill name when you switch.
-- **Sounds**: chimes, a humming beam and a deep bell when the staff strikes the ground.
-- **Creative Holy Staff**: a pink-and-rose-gold staff for creative mode with the same skills, but no cooldowns,
-  double healing and twice the beam range. Not craftable; find it in the creative tabs.
-- **Who is an ally**: players (always), pets, animals, villagers and golems. Hostile mobs are not healed
-  (configurable): monsters, and any mob that is attacking a player or a player's pet right now, such as an angry
-  wolf, bee, iron golem or llama. Once it calms down it is an ally again. Holy Beam breaks when its target turns
-  hostile, and Sanctuary throws hostile mobs back instead of healing them.
-- Right click still opens chests and doors; right clicking a mob heals it instead of trading or making a pet sit.
-  The staff never attacks or breaks blocks.
+### Skills
+
+Cast with **right click**, switch with **left click** or **sneak + mouse wheel**.
+
+- 🟡 **Blessed Ground** - place a rune circle with an aim preview; light fills it and heals everyone inside. Cooldown
+  3 s.
+- 🔆 **Holy Beam** - a beam locks onto an ally and heals it strongly for 3 s while you walk slowly. Cooldown 10 s.
+- ⛪ **Sanctuary** - plant the staff: enemies are thrown back and a dome of light heals allies in pulses. Cooldown 20 s.
+
+### More
+
+- 🪄 **Animated 3D staff**, taller than the player, with a glowing crystal and casting poses.
+- 💚 **Flying heal numbers**; your own heals appear next to your health bar.
+- ⏱️ **Skill bar** with cooldowns and a cast bar.
+- 🐺 **Heals the right ones** - players, pets, animals, villagers and golems, never hostile mobs or anything attacking a
+  player (configurable).
+- 💗 **Creative Holy Staff** - no cooldowns, double healing, twice the beam range.
+- ⚙️ **Every number is configurable.**
 
 ## Controls
 
@@ -107,80 +105,63 @@ The jar is written to `build/libs/`.
 <!-- more-mods:start -->
 ## More mods by Pocky
 
+**🌦️ Weather & nature**
+
 <table>
   <tr>
-    <td align="center" width="112"><a href="https://www.curseforge.com/minecraft/mc-mods/turbo-for-distant-horizons"><img src="https://raw.githubusercontent.com/Pocky-l/dhturbo/main/docs/icon.png" width="96" alt="Turbo for Distant Horizons"></a></td>
-    <td>
-      <a href="https://www.curseforge.com/minecraft/mc-mods/turbo-for-distant-horizons"><b>Turbo for Distant Horizons</b></a><br>
-      Distant Horizons addon: generates distant terrain from the world noise many times faster, with real trees nearby.<br>
-      <a href="https://www.curseforge.com/minecraft/mc-mods/turbo-for-distant-horizons"><img alt="CurseForge" src="https://img.shields.io/curseforge/dt/1734835?logo=curseforge&label=CurseForge&color=F16436"></a>
-      <a href="https://github.com/Pocky-l/dhturbo"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-source-181717?logo=github"></a>
-    </td>
+    <td width="56"><a href="https://www.curseforge.com/minecraft/mc-mods/hoarfrost-snow-blizzards"><img src="docs/more-mods/hoarfrost.png" width="48" alt="Hoarfrost: Snow & Blizzards"></a></td>
+    <td><a href="https://www.curseforge.com/minecraft/mc-mods/hoarfrost-snow-blizzards"><b>Hoarfrost: Snow & Blizzards</b></a> - seven kinds of snowfall, a living wind and soft snow on the land (<a href="https://github.com/Pocky-l/hoarfrost">source</a>)</td>
   </tr>
   <tr>
-    <td align="center" width="112"><a href="https://www.curseforge.com/minecraft/mc-mods/hoarfrost-snow-blizzards"><img src="https://raw.githubusercontent.com/Pocky-l/hoarfrost/main/docs/icon.png" width="96" alt="Hoarfrost: Snow & Blizzards"></a></td>
-    <td>
-      <a href="https://www.curseforge.com/minecraft/mc-mods/hoarfrost-snow-blizzards"><b>Hoarfrost: Snow & Blizzards</b></a><br>
-      Cosy, realistic snowy weather: seven kinds of snowfall and blizzard, flakes carried by a living wind, soft snow settling on the land and a quiet winter soundscape.<br>
-      <a href="https://www.curseforge.com/minecraft/mc-mods/hoarfrost-snow-blizzards"><img alt="CurseForge" src="https://img.shields.io/curseforge/dt/1736975?logo=curseforge&label=CurseForge&color=F16436"></a>
-      <a href="https://github.com/Pocky-l/hoarfrost"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-source-181717?logo=github"></a>
-    </td>
+    <td width="56"><a href="https://www.curseforge.com/minecraft/mc-mods/petrichor-rain-storms"><img src="docs/more-mods/petrichor.png" width="48" alt="Petrichor: Rain & Storms"></a></td>
+    <td><a href="https://www.curseforge.com/minecraft/mc-mods/petrichor-rain-storms"><b>Petrichor: Rain & Storms</b></a> - realistic rain, puddles, drips and branching lightning (<a href="https://github.com/Pocky-l/petrichor">source</a>)</td>
   </tr>
   <tr>
-    <td align="center" width="112"><a href="https://www.curseforge.com/minecraft/mc-mods/inventory-backups"><img src="https://raw.githubusercontent.com/Pocky-l/inventory-backups/main/docs/icon.png" width="96" alt="Inventory Backups"></a></td>
-    <td>
-      <a href="https://www.curseforge.com/minecraft/mc-mods/inventory-backups"><b>Inventory Backups</b></a><br>
-      Automatic player inventory and ender chest backups with a clickable chat browser, previews and one-click restore for admins.<br>
-      <a href="https://www.curseforge.com/minecraft/mc-mods/inventory-backups"><img alt="CurseForge" src="https://img.shields.io/curseforge/dt/836385?logo=curseforge&label=CurseForge&color=F16436"></a>
-      <a href="https://github.com/Pocky-l/inventory-backups"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-source-181717?logo=github"></a>
-    </td>
-  </tr>
-  <tr>
-    <td align="center" width="112"><a href="https://www.curseforge.com/minecraft/mc-mods/lumen-rigs"><img src="https://raw.githubusercontent.com/Pocky-l/lumen-rigs/main/docs/icon.png" width="96" alt="Lumen Rigs"></a></td>
-    <td>
-      <a href="https://www.curseforge.com/minecraft/mc-mods/lumen-rigs"><b>Lumen Rigs</b></a><br>
-      Aimable spotlights, floodlights, searchlights and soft panels with colored light and visible beams.<br>
-      <a href="https://www.curseforge.com/minecraft/mc-mods/lumen-rigs"><img alt="CurseForge" src="https://img.shields.io/curseforge/dt/1727739?logo=curseforge&label=CurseForge&color=F16436"></a>
-      <a href="https://github.com/Pocky-l/lumen-rigs"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-source-181717?logo=github"></a>
-    </td>
-  </tr>
-  <tr>
-    <td align="center" width="112"><a href="https://www.curseforge.com/minecraft/mc-mods/neon-glowsticks"><img src="https://raw.githubusercontent.com/Pocky-l/neon-glowsticks/main/docs/icon.png" width="96" alt="Neon Glowsticks"></a></td>
-    <td>
-      <a href="https://www.curseforge.com/minecraft/mc-mods/neon-glowsticks"><b>Neon Glowsticks</b></a><br>
-      Throwable glowsticks that bounce, roll and light up the dark with colored light.<br>
-      <a href="https://www.curseforge.com/minecraft/mc-mods/neon-glowsticks"><img alt="CurseForge" src="https://img.shields.io/curseforge/dt/1727688?logo=curseforge&label=CurseForge&color=F16436"></a>
-      <a href="https://github.com/Pocky-l/neon-glowsticks"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-source-181717?logo=github"></a>
-    </td>
-  </tr>
-  <tr>
-    <td align="center" width="112"><a href="https://www.curseforge.com/minecraft/mc-mods/petrichor-rain-storms"><img src="https://raw.githubusercontent.com/Pocky-l/petrichor/main/docs/icon.png" width="96" alt="Petrichor: Rain & Storms"></a></td>
-    <td>
-      <a href="https://www.curseforge.com/minecraft/mc-mods/petrichor-rain-storms"><b>Petrichor: Rain & Storms</b></a><br>
-      Realistic rain and storms: rain types, puddles, runoff and drips, branching lightning with delayed thunder.<br>
-      <a href="https://www.curseforge.com/minecraft/mc-mods/petrichor-rain-storms"><img alt="CurseForge" src="https://img.shields.io/curseforge/dt/1729574?logo=curseforge&label=CurseForge&color=F16436"></a>
-      <a href="https://github.com/Pocky-l/petrichor"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-source-181717?logo=github"></a>
-    </td>
-  </tr>
-  <tr>
-    <td align="center" width="112"><a href="https://www.curseforge.com/minecraft/mc-mods/rustling-leaves"><img src="https://raw.githubusercontent.com/Pocky-l/rustling-leaves/main/docs/icon.png" width="96" alt="Rustling Leaves"></a></td>
-    <td>
-      <a href="https://www.curseforge.com/minecraft/mc-mods/rustling-leaves"><b>Rustling Leaves</b></a><br>
-      Physically simulated leaves: falling leaves, leaf piles you can wade through, rake and blow away, gusts, whirlwinds and leaf tools.<br>
-      <a href="https://www.curseforge.com/minecraft/mc-mods/rustling-leaves"><img alt="CurseForge" src="https://img.shields.io/curseforge/dt/1729578?logo=curseforge&label=CurseForge&color=F16436"></a>
-      <a href="https://github.com/Pocky-l/rustling-leaves"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-source-181717?logo=github"></a>
-    </td>
-  </tr>
-  <tr>
-    <td align="center" width="112"><a href="https://www.curseforge.com/minecraft/mc-mods/ranchers-vacpack"><img src="https://raw.githubusercontent.com/Pocky-l/ranchers-vacpack/main/docs/icon.png" width="96" alt="Rancher's Vacpack"></a></td>
-    <td>
-      <a href="https://www.curseforge.com/minecraft/mc-mods/ranchers-vacpack"><b>Rancher's Vacpack</b></a><br>
-      A Slime Rancher inspired vacuum gun: suck up items and small mobs, store them in a tank and shoot them back out.<br>
-      <a href="https://www.curseforge.com/minecraft/mc-mods/ranchers-vacpack"><img alt="CurseForge" src="https://img.shields.io/curseforge/dt/1725381?logo=curseforge&label=CurseForge&color=F16436"></a>
-      <a href="https://github.com/Pocky-l/ranchers-vacpack"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-source-181717?logo=github"></a>
-    </td>
+    <td width="56"><a href="https://www.curseforge.com/minecraft/mc-mods/rustling-leaves"><img src="docs/more-mods/rustling_leaves.png" width="48" alt="Rustling Leaves"></a></td>
+    <td><a href="https://www.curseforge.com/minecraft/mc-mods/rustling-leaves"><b>Rustling Leaves</b></a> - falling leaves and leaf piles you can wade through, rake and blow away (<a href="https://github.com/Pocky-l/rustling-leaves">source</a>)</td>
   </tr>
 </table>
+
+**💡 Light**
+
+<table>
+  <tr>
+    <td width="56"><a href="https://www.curseforge.com/minecraft/mc-mods/lumen-rigs"><img src="docs/more-mods/lumen_rigs.png" width="48" alt="Lumen Rigs"></a></td>
+    <td><a href="https://www.curseforge.com/minecraft/mc-mods/lumen-rigs"><b>Lumen Rigs</b></a> - aimable spotlights and floodlights with colored light and visible beams (<a href="https://github.com/Pocky-l/lumen-rigs">source</a>)</td>
+  </tr>
+  <tr>
+    <td width="56"><a href="https://www.curseforge.com/minecraft/mc-mods/neon-glowsticks"><img src="docs/more-mods/neon_glowsticks.png" width="48" alt="Neon Glowsticks"></a></td>
+    <td><a href="https://www.curseforge.com/minecraft/mc-mods/neon-glowsticks"><b>Neon Glowsticks</b></a> - throwable glowsticks that bounce, roll and light up the dark (<a href="https://github.com/Pocky-l/neon-glowsticks">source</a>)</td>
+  </tr>
+</table>
+
+**🎨 Graphics & performance**
+
+<table>
+  <tr>
+    <td width="56"><a href="https://www.curseforge.com/minecraft/mc-mods/turbo-for-distant-horizons"><img src="docs/more-mods/dhturbo.png" width="48" alt="Turbo for Distant Horizons"></a></td>
+    <td><a href="https://www.curseforge.com/minecraft/mc-mods/turbo-for-distant-horizons"><b>Turbo for Distant Horizons</b></a> - Distant Horizons terrain generated many times faster (<a href="https://github.com/Pocky-l/dhturbo">source</a>)</td>
+  </tr>
+</table>
+
+**⚔️ Gear & gameplay**
+
+<table>
+  <tr>
+    <td width="56"><a href="https://www.curseforge.com/minecraft/mc-mods/ranchers-vacpack"><img src="docs/more-mods/vacpack.png" width="48" alt="Rancher's Vacpack"></a></td>
+    <td><a href="https://www.curseforge.com/minecraft/mc-mods/ranchers-vacpack"><b>Rancher's Vacpack</b></a> - a Slime Rancher vacuum gun for items and small mobs (<a href="https://github.com/Pocky-l/ranchers-vacpack">source</a>)</td>
+  </tr>
+</table>
+
+**🛠️ Server tools**
+
+<table>
+  <tr>
+    <td width="56"><a href="https://www.curseforge.com/minecraft/mc-mods/inventory-backups"><img src="docs/more-mods/inventorybackups.png" width="48" alt="Inventory Backups"></a></td>
+    <td><a href="https://www.curseforge.com/minecraft/mc-mods/inventory-backups"><b>Inventory Backups</b></a> - inventory and ender chest backups with one-click restore for admins (<a href="https://github.com/Pocky-l/inventory-backups">source</a>)</td>
+  </tr>
+</table>
+
 <!-- more-mods:end -->
 
 ## License
