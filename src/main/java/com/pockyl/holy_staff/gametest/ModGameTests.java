@@ -5,11 +5,15 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.animal.horse.SkeletonHorse;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.monster.Husk;
+import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -265,8 +269,9 @@ public final class ModGameTests {
         Wolf wolf = still(helper, EntityType.WOLF, new Vec3(2.0, 3, 0.5));
         wolf.setHealth(1.0F);
         wolf.setTarget(player);
-        Zombie zombie = still(helper, EntityType.ZOMBIE, new Vec3(0.5, 3, 2.0));
-        zombie.setHealth(1.0F);
+        // Not a zombie: undead take holy damage instead.
+        Spider spider = still(helper, EntityType.SPIDER, new Vec3(0.5, 3, 2.0));
+        spider.setHealth(1.0F);
 
         Config.setHealMonsters(true);
         try {
@@ -278,7 +283,7 @@ public final class ModGameTests {
         helper.runAfterDelay(16, () -> {
             try {
                 helper.assertTrue(near(wolf.getHealth(), 8.0F), "the attacking wolf is healed, got " + wolf.getHealth());
-                helper.assertTrue(near(zombie.getHealth(), 8.0F), "the zombie is healed, got " + zombie.getHealth());
+                helper.assertTrue(near(spider.getHealth(), 8.0F), "the spider is healed, got " + spider.getHealth());
             } finally {
                 Config.setHealMonsters(false);
             }
@@ -328,6 +333,68 @@ public final class ModGameTests {
         helper.succeed();
     }
 
+    @GameTest(template = "empty", timeoutTicks = 60, batch = "blessedGroundSmitesUndeadButHealsUndeadPets")
+    public static void blessedGroundSmitesUndeadButHealsUndeadPets(GameTestHelper helper) {
+        ServerPlayer player = caster(helper, new Vec3(0.5, 3, 0.5), Skill.BLESSED_GROUND);
+        player.setXRot(-90.0F);
+        // A husk does not burn in daylight, which would spoil the numbers.
+        Husk husk = target(helper, EntityType.HUSK, new Vec3(2.0, 3, 0.5));
+        SkeletonHorse horse = still(helper, EntityType.SKELETON_HORSE, new Vec3(0.5, 3, 2.0));
+        horse.setOwnerUUID(player.getUUID());
+        horse.setHealth(1.0F);
+
+        helper.assertTrue(Healing.canSmite(husk), "undead mobs are smitten");
+        helper.assertFalse(Healing.canHeal(husk), "undead mobs are not healed");
+        helper.assertFalse(Healing.canSmite(horse), "an undead pet is not smitten");
+        helper.assertTrue(SkillCaster.tryCast(player), "the cast succeeds");
+        helper.runAfterDelay(16, () -> {
+            helper.assertTrue(near(husk.getHealth(), 13.0F), "the husk takes 7 holy damage, got " + husk.getHealth());
+            helper.assertTrue(husk.getLastHurtByMob() == player, "the damage is credited to the caster");
+            helper.assertTrue(near(horse.getHealth(), 8.0F), "the undead pet is healed by 7, got " + horse.getHealth());
+            cleanUp(helper, player, husk, horse);
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 60, batch = "holyBeamSmitesAnAimedUndeadMob")
+    public static void holyBeamSmitesAnAimedUndeadMob(GameTestHelper helper) {
+        ServerPlayer player = caster(helper, new Vec3(0.5, 3, 0.5), Skill.HOLY_BEAM);
+        Husk husk = target(helper, EntityType.HUSK, new Vec3(6.5, 3, 0.5));
+        player.lookAt(EntityAnchorArgument.Anchor.EYES, husk.getBoundingBox().getCenter());
+
+        helper.assertTrue(SkillCaster.tryCast(player), "the beam starts on an undead mob");
+        // Steps of 2 every 5 ticks; the hurt cooldown must not swallow any of them.
+        helper.runAfterDelay(11, () -> {
+            helper.assertTrue(near(husk.getHealth(), 14.0F), "three damage steps after 11 ticks, got " + husk.getHealth());
+            Channels.stop(player);
+            cleanUp(helper, player, husk);
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 60, batch = "holyDamageCanBeTurnedOff")
+    public static void holyDamageCanBeTurnedOff(GameTestHelper helper) {
+        ServerPlayer player = caster(helper, new Vec3(0.5, 3, 0.5), Skill.BLESSED_GROUND);
+        player.setXRot(-90.0F);
+        Husk husk = target(helper, EntityType.HUSK, new Vec3(2.0, 3, 0.5));
+
+        Config.setHolyDamage(false);
+        try {
+            helper.assertFalse(Healing.canSmite(husk), "no holy damage when turned off");
+            helper.assertFalse(Healing.canHeal(husk), "undead monsters are still not healed");
+            helper.assertTrue(SkillCaster.tryCast(player), "the cast succeeds");
+        } catch (RuntimeException e) {
+            Config.setHolyDamage(true);
+            throw e;
+        }
+        helper.runAfterDelay(16, () -> {
+            Config.setHolyDamage(true);
+            helper.assertTrue(husk.getHealth() == husk.getMaxHealth(), "the husk is untouched, got " + husk.getHealth());
+            cleanUp(helper, player, husk);
+            helper.succeed();
+        });
+    }
+
     private static boolean near(float actual, float expected) {
         return Math.abs(actual - expected) < EPSILON;
     }
@@ -347,6 +414,27 @@ public final class ModGameTests {
         staff.set(ModDataComponents.SELECTED_SKILL, skill);
         player.setItemInHand(InteractionHand.MAIN_HAND, staff);
         return player;
+    }
+
+    /**
+     * Removes the test's entities and circles: a leftover monster becomes the target of mobs in the next test (an iron
+     * golem then stops being angry at its player), a fading circle counts as a second circle there.
+     */
+    private static void cleanUp(GameTestHelper helper, ServerPlayer player, Entity... entities) {
+        for (BlessedGround circle : helper.getLevel().getEntitiesOfClass(BlessedGround.class, player.getBoundingBox().inflate(8))) {
+            circle.discard();
+        }
+        for (Entity entity : entities) {
+            entity.discard();
+        }
+        player.discard();
+    }
+
+    /** A mob that stays in place but can be hurt. */
+    private static <T extends Mob> T target(GameTestHelper helper, EntityType<T> type, Vec3 relative) {
+        T mob = helper.spawnWithNoFreeWill(type, relative);
+        mob.setNoGravity(true);
+        return mob;
     }
 
     private static <T extends Mob> T still(GameTestHelper helper, EntityType<T> type, Vec3 relative) {

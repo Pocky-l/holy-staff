@@ -38,6 +38,8 @@ Cast with **right click**, switch with **left click** or **sneak + mouse wheel**
 - ⏱️ **Skill bar** with cooldowns and a cast bar.
 - 🐺 **Heals the right ones** - players, pets, animals, villagers and golems, never hostile mobs or anything attacking a
   player (configurable).
+- 💀 **Holy light burns the undead** - every skill hurts zombies, skeletons, phantoms and other undead instead of
+  healing them, with golden damage numbers; undead pets are still healed.
 - 💗 **Creative Holy Staff** - no cooldowns, double healing, twice the beam range.
 - ⚙️ **Every number is configurable.**
 
@@ -73,6 +75,7 @@ In creative mode the staff and the Creative Holy Staff are in the **Pocky Mods**
 | Option | Default | Description |
 |---|---|---|
 | `healMonsters` | `false` | Whether hostile mobs (monsters and mobs attacking players or their pets) can be healed |
+| `holyDamage` / `holyDamageMultiplier` | `true` / `1.0` | Whether skills hurt undead mobs instead of healing them, and how much (x the heal) |
 | `blessedGround.amount` / `radius` / `delay` / `range` / `cooldown` | `7` / `3` / `0.6` s / `20` / `3` s | Blessed Ground |
 | `holyBeam.healPerSecond` / `duration` / `range` / `movementMultiplier` / `cooldown` | `8` / `3` s / `16` / `0.3` / `10` s | Holy Beam |
 | `sanctuary.healPerPulse` / `pulseInterval` / `duration` / `radius` / `knockbackRadius` / `knockbackStrength` / `cooldown` | `2.5` / `0.5` s / `3` s / `7` / `5` / `1.5` / `20` s | Sanctuary |

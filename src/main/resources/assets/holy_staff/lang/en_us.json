@@ -15,7 +15,7 @@
   "hud.holy_staff.cast": "RMB",
   "hud.holy_staff.switch": "LMB / Shift+wheel: switch",
   "hud.holy_staff.cancel_hint": "%s (click to cancel)",
-  "message.holy_staff.no_target": "Aim at an ally to start the beam",
+  "message.holy_staff.no_target": "Aim at an ally or an undead mob to start the beam",
   "key.categories.holy_staff": "Holy Staff",
   "key.holy_staff.next_skill": "Next Staff Skill",
   "particle.holy_staff.holy_sparkle": "Holy Sparkle",
@@ -34,6 +34,8 @@
   "holy_staff.configuration.section.holy.staff.client.toml": "Visuals",
   "holy_staff.configuration.section.holy.staff.client.toml.title": "Visuals",
   "holy_staff.configuration.healMonsters": "Heal Hostile Mobs",
+  "holy_staff.configuration.holyDamage": "Holy Damage to Undead",
+  "holy_staff.configuration.holyDamageMultiplier": "Holy Damage Multiplier",
   "holy_staff.configuration.blessedGround": "Blessed Ground",
   "holy_staff.configuration.blessedHeal": "Heal Amount",
   "holy_staff.configuration.blessedRadius": "Radius (blocks)",
@@ -55,5 +57,7 @@
   "holy_staff.configuration.sanctuaryKnockback": "Knockback Strength",
   "holy_staff.configuration.sanctuaryCooldown": "Cooldown (seconds)",
   "holy_staff.configuration.showHealNumbers": "Show Heal Numbers",
-  "holy_staff.configuration.showSkillHud": "Show Skill Bar"
+  "holy_staff.configuration.showSkillHud": "Show Skill Bar",
+  "death.attack.holy_staff.holy": "%1$s was purified by holy light",
+  "death.attack.holy_staff.holy.player": "%1$s was purified by %2$s"
 }

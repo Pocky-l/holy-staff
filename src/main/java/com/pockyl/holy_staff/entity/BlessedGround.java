@@ -15,6 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import com.pockyl.holy_staff.registry.ModEntities;
 import com.pockyl.holy_staff.registry.ModParticles;
@@ -22,9 +23,11 @@ import com.pockyl.holy_staff.registry.ModSounds;
 import com.pockyl.holy_staff.skill.Healing;
 import com.pockyl.holy_staff.skill.Skill;
 
+import java.util.UUID;
+
 /**
  * Blessed Ground: a circle that fills up from its centre for {@code delay} ticks, then bursts and heals every ally
- * standing in it once, then fades out.
+ * standing in it once (undead take holy damage instead), then fades out.
  */
 public final class BlessedGround extends Entity {
     /** Ticks the burst stays visible after healing. */
@@ -36,14 +39,17 @@ public final class BlessedGround extends Entity {
     private static final EntityDataAccessor<Integer> DELAY = SynchedEntityData.defineId(BlessedGround.class, EntityDataSerializers.INT);
 
     private float heal;
+    @Nullable
+    private UUID ownerId;
 
     public BlessedGround(EntityType<? extends BlessedGround> type, Level level) {
         super(type, level);
         noPhysics = true;
     }
 
-    public BlessedGround(Level level, Vec3 pos, float radius, int delay, float heal) {
+    public BlessedGround(Level level, Vec3 pos, float radius, int delay, float heal, @Nullable Entity owner) {
         this(ModEntities.BLESSED_GROUND.get(), level);
+        this.ownerId = owner == null ? null : owner.getUUID();
         setPos(pos);
         entityData.set(RADIUS, radius);
         entityData.set(DELAY, delay);
@@ -112,11 +118,12 @@ public final class BlessedGround extends Entity {
         float radius = radius();
         AABB area = new AABB(getX() - radius, getY() - HEIGHT_BELOW, getZ() - radius,
                 getX() + radius, getY() + HEIGHT_ABOVE, getZ() + radius);
-        for (LivingEntity entity : level().getEntitiesOfClass(LivingEntity.class, area, Healing::canHeal)) {
+        Entity owner = ownerId == null ? null : level().getPlayerByUUID(ownerId);
+        for (LivingEntity entity : level().getEntitiesOfClass(LivingEntity.class, area, Healing::canTarget)) {
             double dx = entity.getX() - getX();
             double dz = entity.getZ() - getZ();
             if (dx * dx + dz * dz <= radius * radius) {
-                Healing.heal(entity, heal, Skill.BLESSED_GROUND);
+                Healing.apply(entity, heal, Skill.BLESSED_GROUND, this, owner);
             }
         }
         level().playSound(null, getX(), getY(), getZ(), ModSounds.BLESSED_BURST.get(), SoundSource.PLAYERS, 1.3F, 1.0F);
@@ -171,6 +178,7 @@ public final class BlessedGround extends Entity {
         entityData.set(DELAY, tag.getInt("Delay"));
         tickCount = tag.getInt("Age");
         heal = tag.getFloat("Heal");
+        ownerId = tag.hasUUID("Owner") ? tag.getUUID("Owner") : null;
     }
 
     @Override
@@ -179,5 +187,8 @@ public final class BlessedGround extends Entity {
         tag.putInt("Delay", delay());
         tag.putInt("Age", tickCount);
         tag.putFloat("Heal", heal);
+        if (ownerId != null) {
+            tag.putUUID("Owner", ownerId);
+        }
     }
 }

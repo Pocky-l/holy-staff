@@ -29,8 +29,9 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Green "+3.5" numbers flying out of healed entities: they pop out of the body in an arc (up and to a random side),
- * follow the entity, and fade out. Bigger heals get bigger numbers. Heals of the local player go to {@link SelfHealHud}.
+ * Green "+3.5" numbers flying out of healed entities (golden "-3.5" out of smitten undead): they pop out of the body in
+ * an arc (up and to a random side), follow the entity, and fade out. Bigger numbers for bigger amounts. Heals of the local
+ * player go to {@link SelfHealHud}.
  */
 @EventBusSubscriber(modid = HolyStaff.MOD_ID, value = Dist.CLIENT)
 public final class HealNumbers {
@@ -39,6 +40,8 @@ public final class HealNumbers {
     private static final float TEXT_SCALE = 0.035F;
     private static final int GREEN = 0x55FF55;
     private static final int OUTLINE = 0x0B3D0B;
+    private static final int GOLD = 0xFFC83D;
+    private static final int GOLD_OUTLINE = 0x4A2C00;
     private static final double GRAVITY = 0.018;
     private static final double DRAG = 0.92;
     private static final RandomSource RANDOM = RandomSource.create();
@@ -56,13 +59,16 @@ public final class HealNumbers {
         if (entity == null) {
             return;
         }
-        ClientSkillEffects.burst(minecraft.level, entity, ModParticles.HOLY_SPARKLE.get(), 3 + Math.min(12, Math.round(payload.amount() * 1.5F)));
+        boolean damage = payload.amount() < 0;
+        float amount = Math.abs(payload.amount());
+        ClientSkillEffects.burst(minecraft.level, entity, damage ? ModParticles.HOLY_GLOW.get() : ModParticles.HOLY_SPARKLE.get(),
+                3 + Math.min(12, Math.round(amount * 1.5F)));
         if (!Config.showHealNumbers()) {
             return;
         }
-        if (entity == minecraft.player) {
+        if (entity == minecraft.player && !damage) {
             // Your own heals are shown next to your health bar instead.
-            SelfHealHud.add(format(payload.amount()), payload.amount());
+            SelfHealHud.add(format(amount), amount);
             return;
         }
         if (POPUPS.size() >= MAX_POPUPS) {
@@ -73,8 +79,9 @@ public final class HealNumbers {
         double angle = RANDOM.nextDouble() * Math.PI * 2;
         double speed = 0.05 + RANDOM.nextDouble() * 0.05;
         Vec3 velocity = new Vec3(Math.cos(angle) * speed, 0.2 + RANDOM.nextDouble() * 0.06, Math.sin(angle) * speed);
-        float size = 1.0F + Math.min(10.0F, payload.amount()) * 0.04F;
-        POPUPS.add(new Popup(entity, offset, velocity, entity.position(), format(payload.amount()), size));
+        float size = 1.0F + Math.min(10.0F, amount) * 0.04F;
+        String text = damage ? "-" + format(amount).substring(1) : format(amount);
+        POPUPS.add(new Popup(entity, offset, velocity, entity.position(), text, size, damage));
     }
 
     static String format(float amount) {
@@ -137,8 +144,8 @@ public final class HealNumbers {
             poseStack.scale(scale, -scale, scale);
             FormattedCharSequence text = Component.literal(popup.text).getVisualOrderText();
             int a = Math.max(4, Math.round(alpha * 255)) << 24;
-            font.drawInBatch8xOutline(text, -font.width(text) / 2.0F, -4, a | GREEN, a | OUTLINE,
-                    poseStack.last().pose(), buffers, LightTexture.FULL_BRIGHT);
+            font.drawInBatch8xOutline(text, -font.width(text) / 2.0F, -4, a | (popup.damage ? GOLD : GREEN),
+                    a | (popup.damage ? GOLD_OUTLINE : OUTLINE), poseStack.last().pose(), buffers, LightTexture.FULL_BRIGHT);
             poseStack.popPose();
         }
         buffers.endBatch();
@@ -148,13 +155,14 @@ public final class HealNumbers {
         private final Entity entity;
         private final String text;
         private final float size;
+        private final boolean damage;
         private Vec3 offset;
         private Vec3 previousOffset;
         private Vec3 velocity;
         private Vec3 lastPos;
         private int age;
 
-        private Popup(Entity entity, Vec3 offset, Vec3 velocity, Vec3 lastPos, String text, float size) {
+        private Popup(Entity entity, Vec3 offset, Vec3 velocity, Vec3 lastPos, String text, float size, boolean damage) {
             this.entity = entity;
             this.offset = offset;
             this.previousOffset = offset;
@@ -162,6 +170,7 @@ public final class HealNumbers {
             this.lastPos = lastPos;
             this.text = text;
             this.size = size;
+            this.damage = damage;
         }
     }
 }

@@ -74,7 +74,7 @@ public final class SkillCaster {
         ServerLevel level = player.serverLevel();
         Vec3 pos = groundTarget(player);
         level.addFreshEntity(new BlessedGround(level, pos, Config.blessedRadius(), Config.blessedDelay(),
-                Config.blessedHeal() * staff.healMultiplier()));
+                Config.blessedHeal() * staff.healMultiplier(), player));
         ModNetwork.sendToNearby(player, new SkillFxPayload(Skill.BLESSED_GROUND.ordinal(), player.getId(),
                 new Vector3f((float) pos.x, (float) pos.y, (float) pos.z)));
         level.playSound(null, pos.x, pos.y, pos.z, ModSounds.BLESSED_CAST.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
@@ -82,7 +82,7 @@ public final class SkillCaster {
     }
 
     private static boolean holyBeam(ServerPlayer player, HolyStaffItem staff) {
-        LivingEntity target = findAimedAlly(player, staff.beamRange());
+        LivingEntity target = findAimedTarget(player, staff.beamRange());
         if (target == null) {
             player.displayClientMessage(Component.translatable("message.holy_staff.no_target"), true);
             return false;
@@ -101,11 +101,11 @@ public final class SkillCaster {
     }
 
     /**
-     * The healable entity closest to the crosshair: anything the look ray passes through wins, otherwise the smallest
+     * The healable or undead entity closest to the crosshair: anything the look ray passes through wins, otherwise the smallest
      * angle within a few degrees (aim assist for small or moving targets). Requires line of sight.
      */
     @Nullable
-    public static LivingEntity findAimedAlly(Player player, double range) {
+    public static LivingEntity findAimedTarget(Player player, double range) {
         Vec3 eye = player.getEyePosition();
         Vec3 look = player.getViewVector(1.0F);
         Vec3 end = eye.add(look.scale(range));
@@ -116,7 +116,7 @@ public final class SkillCaster {
         LivingEntity best = null;
         double bestScore = Double.MAX_VALUE;
         for (LivingEntity entity : player.level().getEntitiesOfClass(LivingEntity.class, area,
-                entity -> entity != player && Healing.canHeal(entity))) {
+                entity -> entity != player && Healing.canTarget(entity))) {
             AABB box = entity.getBoundingBox().inflate(0.3);
             Vec3 toCenter = box.getCenter().subtract(eye);
             double distance = toCenter.length();
@@ -140,13 +140,13 @@ public final class SkillCaster {
         return best;
     }
 
-    /** Under the aimed ally, else on the aimed block, else under the caster; always snapped down to the ground. */
+    /** Under the aimed ally or undead mob, else on the aimed block, else under the caster; always snapped down to the ground. */
     public static Vec3 groundTarget(Player player) {
         double range = Config.blessedRange();
-        LivingEntity ally = findAimedAlly(player, range);
+        LivingEntity aimed = findAimedTarget(player, range);
         Vec3 pos;
-        if (ally != null) {
-            pos = ally.position();
+        if (aimed != null) {
+            pos = aimed.position();
         } else {
             Vec3 eye = player.getEyePosition();
             BlockHitResult hit = player.level().clip(new ClipContext(eye, eye.add(player.getViewVector(1.0F).scale(range)),

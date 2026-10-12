@@ -23,6 +23,8 @@ Cast with **right click**, switch with **left click** or **sneak + mouse wheel**
 - ⏱️ **Skill bar** with cooldowns and a cast bar.
 - 🐺 **Heals the right ones** - players, pets, animals, villagers and golems, never hostile mobs or anything attacking a
   player (configurable).
+- 💀 **Holy light burns the undead** - every skill hurts zombies, skeletons, phantoms and other undead instead of
+  healing them, with golden damage numbers; undead pets are still healed.
 - 💗 **Creative Holy Staff** - no cooldowns, double healing, twice the beam range.
 - ⚙️ **Every number is configurable.**
 

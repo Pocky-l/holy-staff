@@ -7,7 +7,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import com.pockyl.holy_staff.HolyStaff;
 
-/** Server to client: an entity was healed by a skill; the client shows a floating number. */
+/** Server to client: an entity was healed (positive amount) or smitten (negative) by a skill; the client shows a floating number. */
 public record HealPopupPayload(int entityId, float amount, int skill) implements CustomPacketPayload {
     public static final Type<HealPopupPayload> TYPE = new Type<>(HolyStaff.id("heal_popup"));
 

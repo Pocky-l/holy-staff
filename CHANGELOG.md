@@ -4,6 +4,16 @@ All notable changes to this mod are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - Unreleased
+### Added
+- Holy light burns the undead: Blessed Ground, Holy Beam and Sanctuary hurt zombies, skeletons, phantoms, the Wither
+  and other undead mobs (modded ones too) instead of healing them. The damage equals the heal the skill would give,
+  ignores armor and shows as golden numbers flying out of the mob. Kills count as yours, so they drop experience.
+- Holy Beam and Blessed Ground can be aimed at undead mobs: lock the beam onto a zombie to burn it down, or drop the
+  circle right under a skeleton.
+- Undead pets (a tamed skeleton horse) are still healed.
+- New options: `holyDamage` turns holy damage off, `holyDamageMultiplier` makes it stronger or weaker.
+
 ## [1.1.1] - 2026-10-09
 ### Fixed
 - The staff no longer heals mobs that are attacking players or their pets: angry wolves, iron golems, bees, llamas,

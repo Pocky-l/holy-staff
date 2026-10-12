@@ -6,6 +6,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
@@ -28,7 +29,7 @@ import java.util.UUID;
 /**
  * Channelled skills (Holy Beam, Sanctuary) on the server. A channel runs for a fixed time, is ticked with its level
  * and ends early when the caster cancels it, dies, puts the staff away or (beam) loses the target or the target turns
- * hostile.
+ * hostile. Both skills smite undead mobs instead of healing them.
  */
 @EventBusSubscriber(modid = HolyStaff.MOD_ID)
 public final class Channels {
@@ -118,7 +119,7 @@ public final class Channels {
         LivingEntity target = channel.target;
         ServerPlayer player = channel.player;
         double maxRange = channel.beamRange + BEAM_BREAK_EXTRA_RANGE;
-        if (target == null || !target.isAlive() || !Healing.canHeal(target) || target.level() != player.level()
+        if (target == null || !target.isAlive() || !Healing.canTarget(target) || target.level() != player.level()
                 || target.distanceToSqr(player) > maxRange * maxRange) {
             return false;
         }
@@ -127,7 +128,8 @@ public final class Channels {
             return false;
         }
         if (channel.age % BEAM_HEAL_INTERVAL == 0) {
-            Healing.heal(target, Config.beamHealPerSecond() * BEAM_HEAL_INTERVAL / 20.0F * channel.healMultiplier, Skill.HOLY_BEAM);
+            Healing.apply(target, Config.beamHealPerSecond() * BEAM_HEAL_INTERVAL / 20.0F * channel.healMultiplier, Skill.HOLY_BEAM,
+                    player, player);
             if (channel.age % (BEAM_HEAL_INTERVAL * 2) == 0) {
                 player.level().playSound(null, target.getX(), target.getY(), target.getZ(), ModSounds.HEAL.get(),
                         SoundSource.PLAYERS, 0.6F, 0.9F + player.getRandom().nextFloat() * 0.2F);
@@ -143,9 +145,10 @@ public final class Channels {
         }
         if (channel.age % Config.sanctuaryPulse() == 0) {
             float radius = Config.sanctuaryRadius();
-            for (LivingEntity ally : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(radius, 3, radius),
-                    entity -> Healing.canHeal(entity) && horizontalDistanceSqr(entity, player) <= radius * radius)) {
-                Healing.heal(ally, Config.sanctuaryHeal() * channel.healMultiplier, Skill.SANCTUARY);
+            AABB area = player.getBoundingBox().inflate(radius, 3, radius);
+            for (LivingEntity target : player.level().getEntitiesOfClass(LivingEntity.class, area,
+                    entity -> Healing.canTarget(entity) && horizontalDistanceSqr(entity, player) <= radius * radius)) {
+                Healing.apply(target, Config.sanctuaryHeal() * channel.healMultiplier, Skill.SANCTUARY, player, player);
             }
             player.level().playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.SANCTUARY_PULSE.get(),
                     SoundSource.PLAYERS, 1.2F, 1.0F);

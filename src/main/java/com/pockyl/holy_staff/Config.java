@@ -10,6 +10,14 @@ public final class Config {
             .comment("Whether the staff heals hostile mobs: monsters (zombies, skeletons, ...) and mobs attacking players or their pets.")
             .translation("holy_staff.configuration.healMonsters")
             .define("healMonsters", false);
+    private static final ModConfigSpec.BooleanValue HOLY_DAMAGE = BUILDER
+            .comment("Whether the skills hurt undead mobs (zombies, skeletons, ...) instead of healing them. Undead pets are healed.")
+            .translation("holy_staff.configuration.holyDamage")
+            .define("holyDamage", true);
+    private static final ModConfigSpec.DoubleValue HOLY_DAMAGE_MULTIPLIER = BUILDER
+            .comment("Holy damage dealt to undead mobs, as a multiple of the heal the skill would give.")
+            .translation("holy_staff.configuration.holyDamageMultiplier")
+            .defineInRange("holyDamageMultiplier", 1.0, 0.0, 10.0);
 
     static {
         BUILDER.translation("holy_staff.configuration.blessedGround").push("blessedGround");
@@ -123,6 +131,19 @@ public final class Config {
     /** For game tests; not saved to the file. */
     public static void setHealMonsters(boolean value) {
         HEAL_MONSTERS.set(value);
+    }
+
+    public static boolean holyDamage() {
+        return get(SPEC, HOLY_DAMAGE);
+    }
+
+    /** For game tests; not saved to the file. */
+    public static void setHolyDamage(boolean value) {
+        HOLY_DAMAGE.set(value);
+    }
+
+    public static float holyDamageMultiplier() {
+        return get(SPEC, HOLY_DAMAGE_MULTIPLIER).floatValue();
     }
 
     public static float blessedHeal() {

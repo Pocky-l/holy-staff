@@ -15,7 +15,7 @@
   "hud.holy_staff.cast": "ПКМ",
   "hud.holy_staff.switch": "ЛКМ / Shift+колесо: смена",
   "hud.holy_staff.cancel_hint": "%s (клик — отмена)",
-  "message.holy_staff.no_target": "Наведитесь на союзника, чтобы начать луч",
+  "message.holy_staff.no_target": "Наведитесь на союзника или нежить, чтобы начать луч",
   "key.categories.holy_staff": "Holy Staff",
   "key.holy_staff.next_skill": "Следующий навык посоха",
   "particle.holy_staff.holy_sparkle": "Святая искра",
@@ -34,6 +34,8 @@
   "holy_staff.configuration.section.holy.staff.client.toml": "Визуал",
   "holy_staff.configuration.section.holy.staff.client.toml.title": "Визуал",
   "holy_staff.configuration.healMonsters": "Лечить враждебных мобов",
+  "holy_staff.configuration.holyDamage": "Святой урон по нежити",
+  "holy_staff.configuration.holyDamageMultiplier": "Множитель святого урона",
   "holy_staff.configuration.blessedGround": "Благословенная земля",
   "holy_staff.configuration.blessedHeal": "Сила лечения",
   "holy_staff.configuration.blessedRadius": "Радиус (блоки)",
@@ -55,5 +57,7 @@
   "holy_staff.configuration.sanctuaryKnockback": "Сила отбрасывания",
   "holy_staff.configuration.sanctuaryCooldown": "Перезарядка (секунды)",
   "holy_staff.configuration.showHealNumbers": "Показывать цифры лечения",
-  "holy_staff.configuration.showSkillHud": "Показывать панель навыков"
+  "holy_staff.configuration.showSkillHud": "Показывать панель навыков",
+  "death.attack.holy_staff.holy": "%1$s очищен святым светом",
+  "death.attack.holy_staff.holy.player": "%1$s очищен игроком %2$s"
 }
