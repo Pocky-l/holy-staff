@@ -4,7 +4,7 @@ All notable changes to this mod are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.3.0] - Unreleased
+## [1.3.0] - 2026-10-13
 ### Added
 - Team awareness: the staff no longer heals the caster's enemies. Players of another scoreboard team and their pets
   are left alone, and so is anyone (player or mob) who hurt the caster in the last 5 seconds. Players without a team
