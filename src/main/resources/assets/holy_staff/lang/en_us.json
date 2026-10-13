@@ -34,6 +34,7 @@
   "holy_staff.configuration.section.holy.staff.client.toml": "Visuals",
   "holy_staff.configuration.section.holy.staff.client.toml.title": "Visuals",
   "holy_staff.configuration.healMonsters": "Heal Hostile Mobs",
+  "holy_staff.configuration.healEnemies": "Heal Enemies of the Caster",
   "holy_staff.configuration.holyDamage": "Holy Damage to Undead",
   "holy_staff.configuration.holyDamageMultiplier": "Holy Damage Multiplier",
   "holy_staff.configuration.blessedGround": "Blessed Ground",

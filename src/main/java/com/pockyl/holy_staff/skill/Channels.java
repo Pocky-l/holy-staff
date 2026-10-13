@@ -119,7 +119,7 @@ public final class Channels {
         LivingEntity target = channel.target;
         ServerPlayer player = channel.player;
         double maxRange = channel.beamRange + BEAM_BREAK_EXTRA_RANGE;
-        if (target == null || !target.isAlive() || !Healing.canTarget(target) || target.level() != player.level()
+        if (target == null || !target.isAlive() || !Healing.canTarget(target, player) || target.level() != player.level()
                 || target.distanceToSqr(player) > maxRange * maxRange) {
             return false;
         }
@@ -147,7 +147,7 @@ public final class Channels {
             float radius = Config.sanctuaryRadius();
             AABB area = player.getBoundingBox().inflate(radius, 3, radius);
             for (LivingEntity target : player.level().getEntitiesOfClass(LivingEntity.class, area,
-                    entity -> Healing.canTarget(entity) && horizontalDistanceSqr(entity, player) <= radius * radius)) {
+                    entity -> Healing.canTarget(entity, player) && horizontalDistanceSqr(entity, player) <= radius * radius)) {
                 Healing.apply(target, Config.sanctuaryHeal() * channel.healMultiplier, Skill.SANCTUARY, player, player);
             }
             player.level().playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.SANCTUARY_PULSE.get(),

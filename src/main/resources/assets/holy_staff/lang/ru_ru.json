@@ -34,6 +34,7 @@
   "holy_staff.configuration.section.holy.staff.client.toml": "Визуал",
   "holy_staff.configuration.section.holy.staff.client.toml.title": "Визуал",
   "holy_staff.configuration.healMonsters": "Лечить враждебных мобов",
+  "holy_staff.configuration.healEnemies": "Лечить врагов заклинателя",
   "holy_staff.configuration.holyDamage": "Святой урон по нежити",
   "holy_staff.configuration.holyDamageMultiplier": "Множитель святого урона",
   "holy_staff.configuration.blessedGround": "Благословенная земля",

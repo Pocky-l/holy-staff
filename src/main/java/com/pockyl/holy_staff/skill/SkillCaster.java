@@ -116,7 +116,7 @@ public final class SkillCaster {
         LivingEntity best = null;
         double bestScore = Double.MAX_VALUE;
         for (LivingEntity entity : player.level().getEntitiesOfClass(LivingEntity.class, area,
-                entity -> entity != player && Healing.canTarget(entity))) {
+                entity -> entity != player && Healing.canTarget(entity, player))) {
             AABB box = entity.getBoundingBox().inflate(0.3);
             Vec3 toCenter = box.getCenter().subtract(eye);
             double distance = toCenter.length();

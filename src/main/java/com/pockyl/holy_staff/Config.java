@@ -10,6 +10,10 @@ public final class Config {
             .comment("Whether the staff heals hostile mobs: monsters (zombies, skeletons, ...) and mobs attacking players or their pets.")
             .translation("holy_staff.configuration.healMonsters")
             .define("healMonsters", false);
+    private static final ModConfigSpec.BooleanValue HEAL_ENEMIES = BUILDER
+            .comment("Whether the staff heals the caster's enemies: players of another scoreboard team and their pets, and anyone who hurt the caster in the last 5 seconds.")
+            .translation("holy_staff.configuration.healEnemies")
+            .define("healEnemies", false);
     private static final ModConfigSpec.BooleanValue HOLY_DAMAGE = BUILDER
             .comment("Whether the skills hurt undead mobs (zombies, skeletons, ...) instead of healing them. Undead pets are healed.")
             .translation("holy_staff.configuration.holyDamage")
@@ -131,6 +135,15 @@ public final class Config {
     /** For game tests; not saved to the file. */
     public static void setHealMonsters(boolean value) {
         HEAL_MONSTERS.set(value);
+    }
+
+    public static boolean healEnemies() {
+        return get(SPEC, HEAL_ENEMIES);
+    }
+
+    /** For game tests; not saved to the file. */
+    public static void setHealEnemies(boolean value) {
+        HEAL_ENEMIES.set(value);
     }
 
     public static boolean holyDamage() {

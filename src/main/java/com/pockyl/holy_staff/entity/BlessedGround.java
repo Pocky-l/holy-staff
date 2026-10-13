@@ -119,7 +119,7 @@ public final class BlessedGround extends Entity {
         AABB area = new AABB(getX() - radius, getY() - HEIGHT_BELOW, getZ() - radius,
                 getX() + radius, getY() + HEIGHT_ABOVE, getZ() + radius);
         Entity owner = ownerId == null ? null : level().getPlayerByUUID(ownerId);
-        for (LivingEntity entity : level().getEntitiesOfClass(LivingEntity.class, area, Healing::canTarget)) {
+        for (LivingEntity entity : level().getEntitiesOfClass(LivingEntity.class, area, entity -> Healing.canTarget(entity, owner))) {
             double dx = entity.getX() - getX();
             double dz = entity.getZ() - getZ();
             if (dx * dx + dz * dz <= radius * radius) {

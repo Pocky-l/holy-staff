@@ -17,6 +17,8 @@ import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.scores.PlayerTeam;
+import net.minecraft.world.scores.Scoreboard;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -205,6 +207,36 @@ public final class ModGameTests {
             creative.discard();
             helper.succeed();
         });
+    }
+
+    @GameTest(template = "empty", batch = "enemiesOfTheCasterAreNotHealed")
+    public static void enemiesOfTheCasterAreNotHealed(GameTestHelper helper) {
+        ServerPlayer player = caster(helper, new Vec3(0.5, 3, 0.5), Skill.BLESSED_GROUND);
+        Mob ally = still(helper, EntityType.COW, new Vec3(2.5, 3, 0.5));
+        Scoreboard scoreboard = helper.getLevel().getScoreboard();
+        PlayerTeam blue = scoreboard.addPlayerTeam("holy_staff_test_blue");
+        PlayerTeam red = scoreboard.addPlayerTeam("holy_staff_test_red");
+        try {
+            helper.assertTrue(Healing.canTarget(ally, player), "without teams everyone is an ally");
+            scoreboard.addPlayerToTeam(player.getScoreboardName(), blue);
+            helper.assertTrue(Healing.canTarget(ally, player), "an entity without a team is an ally");
+            scoreboard.addPlayerToTeam(ally.getScoreboardName(), red);
+            helper.assertFalse(Healing.canTarget(ally, player), "another team is not healed");
+            helper.assertTrue(Healing.canTarget(ally), "another team is only an enemy of that caster");
+            Config.setHealEnemies(true);
+            helper.assertTrue(Healing.canTarget(ally, player), "healEnemies heals other teams");
+            Config.setHealEnemies(false);
+            scoreboard.addPlayerToTeam(ally.getScoreboardName(), blue);
+            helper.assertTrue(Healing.canTarget(ally, player), "the caster's own team is healed");
+            player.setLastHurtByMob(ally);
+            helper.assertFalse(Healing.canTarget(ally, player), "whoever just hurt the caster is not healed");
+        } finally {
+            Config.setHealEnemies(false);
+            scoreboard.removePlayerTeam(blue);
+            scoreboard.removePlayerTeam(red);
+        }
+        player.discard();
+        helper.succeed();
     }
 
     @GameTest(template = "empty", batch = "mobsFightingPlayersOrTheirPetsAreHostile")

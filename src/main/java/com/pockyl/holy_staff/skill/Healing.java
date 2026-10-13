@@ -53,6 +53,26 @@ public final class Healing {
         return canSmite(entity) || canHeal(entity);
     }
 
+    /** What the caster's skills can be aimed at: {@link #canTarget} without the caster's enemies. */
+    public static boolean canTarget(LivingEntity entity, @Nullable Entity caster) {
+        return canSmite(entity) || canHeal(entity) && !isEnemyOf(entity, caster);
+    }
+
+    /**
+     * Players and pets of another scoreboard team than the caster's, and whoever hurt the caster in the last 5 seconds,
+     * unless {@code healEnemies} is on. Teams are synced to clients; recent attackers are known only on the server.
+     */
+    public static boolean isEnemyOf(LivingEntity entity, @Nullable Entity caster) {
+        if (caster == null || entity == caster || Config.healEnemies()) {
+            return false;
+        }
+        if (caster instanceof LivingEntity living && living.getLastHurtByMob() == entity) {
+            return true;
+        }
+        // Pets report their owner's team.
+        return entity.getTeam() != null && caster.getTeam() != null && !caster.isAlliedTo(entity);
+    }
+
     /**
      * Like {@link #canHeal} but ignores what a mob is doing right now (attack target, anger): only that state is not
      * synced to clients, so this gives the same answer on both sides.
